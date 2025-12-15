@@ -8,6 +8,7 @@ import org.jbake.template.model.JbakeTemplateModel
 import org.jbake.util.Logging.logger
 import org.slf4j.Logger
 import java.io.Writer
+import java.time.ZoneId
 
 /**
  * A template engine which delegates to a supported template engine, based on the file extension.
@@ -59,7 +60,7 @@ class DelegatingTemplateEngine(db: ContentStore, config: JBakeConfiguration) : A
         }
 
         // Convert Temporals to java.util.Date for all template engines
-        val convertedModel = org.jbake.util.convertTemporalsInModelToJavaUtilDate(model)
+        val convertedModel = org.jbake.util.convertTemporalsInModelToJavaUtilDate(model, ZoneId.systemDefault())
 
         engine.renderDocument(convertedModel, templateFileName, writer)
     }
