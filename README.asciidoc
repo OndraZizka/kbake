@@ -13,6 +13,11 @@ image:https://github.com/jbake-org/jbake/actions/workflows/maven-build.yml/badge
 
 *Version:* 5.0.0-rc1 | *Group ID:* `ch.zizka.jbake`
 
+== News
+
+*2026-02-10:* 5.0.0 expected to be released within February.
+
+
 == Documentation
 
 Original documentation is available on http://jbake.org/docs/[jbake.org].
