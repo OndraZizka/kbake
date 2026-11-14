@@ -76,7 +76,8 @@ class ModelExtractorsRegistry private constructor() {
                 }
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.error("Could not load template model extractors: ${e.message}")
+            log.debug("Model extractor loading failure details", e)
         }
     }
 

@@ -66,6 +66,10 @@ class GroovyMarkupTemplateEngine(config: JBakeConfiguration, db: ContentStore) :
         return object : JbakeTemplateModel(model) {
 
             override fun get(key: String): Any? {
+                // Template includes add variables (for example `post`) to this model. Prefer those
+                // explicit values over extractor lookup, and preserve the map's own writes.
+                if (super.containsKey(key)) return super.get(key)
+
                 try {
                     // Pass a plain map to avoid invoking the overridden get and causing recursion.
                     //val plainMap = (model as? Map<String, Any>)?.toMutableMap() ?: return null
@@ -77,8 +81,7 @@ class GroovyMarkupTemplateEngine(config: JBakeConfiguration, db: ContentStore) :
                     return transformForGroovy(extracted)
                 }
                 catch (e: NoModelExtractorException) {
-                    log.error("NoModelExtractorException: ${e.message}")
-                    return model[key]
+                    return super.get(key)
                 }
             }
         }

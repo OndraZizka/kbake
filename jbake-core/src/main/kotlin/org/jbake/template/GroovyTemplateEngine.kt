@@ -8,6 +8,7 @@ import org.jbake.app.ContentStore
 import org.jbake.app.NoModelExtractorException
 import org.jbake.app.RenderingException
 import org.jbake.app.configuration.JBakeConfiguration
+import org.jbake.model.ModelAttributes
 import org.jbake.template.model.JbakeTemplateModel
 import org.xml.sax.SAXException
 import java.io.IOException
@@ -24,7 +25,10 @@ class GroovyTemplateEngine(config: JBakeConfiguration, db: ContentStore) : Abstr
     override fun renderDocument(model: JbakeTemplateModel, templateName: String, writer: Writer) {
         try {
             val template = findTemplate(templateName)
-            val writable = template.make(wrap(model))
+            val renderModel = JbakeTemplateModel(model).apply {
+                put(ModelAttributes.TMPL_OUT_WRITER, writer)
+            }
+            val writable = template.make(wrap(renderModel))
             writable.writeTo(writer)
         }
         catch (e: Exception) { throw RenderingException(e.message?:"",e) }
@@ -51,7 +55,7 @@ class GroovyTemplateEngine(config: JBakeConfiguration, db: ContentStore) : Abstr
                     return MethodClosure(this@GroovyTemplateEngine, "doInclude").curry(this)
 
                 return try {
-                    extractors.extractAndTransform(db, key, model, TemplateEngineAdapter.NoopAdapter())
+                    extractors.extractAndTransform(db, key, model, TemplateEngineAdapter.JavaUtilDateAdapter())
                 }
                 // super.get() would recurse, so we directly access the backing map.
                 catch (e: NoModelExtractorException) { model[key] }
@@ -60,8 +64,8 @@ class GroovyTemplateEngine(config: JBakeConfiguration, db: ContentStore) : Abstr
     }
 
     private fun doInclude(model: JbakeTemplateModel, templateName: String) {
-        val engine: AbstractTemplateEngine = model.renderer!!
-        val out = model.writer!!
+        val engine = model.renderer ?: throw RenderingException("Cannot include '$templateName': rendering context is unavailable.")
+        val out = model.writer ?: throw RenderingException("Cannot include '$templateName': output writer is unavailable.")
         engine.renderDocument(model, templateName, out)
     }
 }

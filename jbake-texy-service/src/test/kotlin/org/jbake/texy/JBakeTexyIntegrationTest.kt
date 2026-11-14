@@ -23,7 +23,8 @@ import java.nio.file.Files
  */
 class JBakeTexyIntegrationTest : FunSpec({
 
-    val texyContainer = GenericContainer("jbake/texy-service:latest")
+    val texyImage = System.getProperty("docker.image.name", "jbake/texy-service:latest")
+    val texyContainer = GenericContainer(texyImage)
         .withExposedPorts(TEXY_PORT)
         .waitingFor(Wait.forHttp("/").forStatusCode(200))
         .withStartupTimeout(java.time.Duration.ofMinutes(2))
@@ -206,6 +207,6 @@ class JBakeTexyIntegrationTest : FunSpec({
     }
 }) {
     companion object {
-        private const val TEXY_PORT = 37813
+        private const val TEXY_PORT = 8080
     }
 }

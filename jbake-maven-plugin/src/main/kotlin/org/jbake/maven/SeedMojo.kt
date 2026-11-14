@@ -52,8 +52,10 @@ class SeedMojo : AbstractMojo() {
             unpackZip(tmpZipFile)
             log.info("JBake template successfully seeded into: ${outputDirectory.absolutePath}")
         } catch (e: Exception) {
-            log.error("Failed to seed JBake template from '$seedUrl' to '${outputDirectory.absolutePath}': ${e.message}", e)
-            throw MojoExecutionException("Failed to seed JBake template into ${outputDirectory.absolutePath}", e)
+            val message = e.message ?: "unknown download or extraction error"
+            log.error("Failed to seed JBake template into '${outputDirectory.absolutePath}': $message")
+            log.debug("JBake seed failure details", e)
+            throw MojoExecutionException("Failed to seed JBake template into ${outputDirectory.absolutePath}: $message", e)
         }
     }
 

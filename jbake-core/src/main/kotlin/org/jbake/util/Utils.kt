@@ -44,6 +44,9 @@ private fun doConvertDatesInModel(value: Any?, timeZoneId: ZoneId): Any?
     else -> convertScalar(value, timeZoneId)
 }
 
+/** Convert temporal values in arbitrary extractor results before exposing them to legacy template APIs. */
+fun convertTemporalValues(value: Any?, timeZoneId: ZoneId): Any? = doConvertDatesInModel(value, timeZoneId)
+
 private fun convertScalar(value: Any?, timeZoneId: ZoneId): Any?
     = when (value) {
     is java.time.OffsetDateTime -> java.util.Date.from(value.toInstant())

@@ -24,6 +24,12 @@ class LaunchOptions {
     )
     var verbose: BooleanArray = booleanArrayOf()
 
+    @CommandLine.Option(
+        names = ["-d", "--debug"],
+        description = ["show diagnostic details and stack traces when an error occurs"]
+    )
+    var debug: Boolean = false
+
     /**
      * Returns the effective log level based on -l or -v options.
      * -v = WARN, -vv = INFO, -vvv = DEBUG
@@ -57,8 +63,21 @@ class LaunchOptions {
     var isBake: Boolean = false
         get() = field || (this.sourceValue != null && this.destinationValue != null)
 
-    @CommandLine.ArgGroup(exclusive = false, heading = "%n%nJBake initialization%n%n")
-    private var initGroup: InitOptions? = null
+    @CommandLine.Option(
+        names = ["-i", "--init"],
+        description = ["initialises the site structure with default templates"]
+    )
+    var isInit: Boolean = false
+
+    @CommandLine.Option(
+        names = ["-t", "--template"],
+        paramLabel = "<template>",
+        defaultValue = "freemarker",
+        fallbackValue = "freemarker",
+        description = ["template engine for initialization (default: freemarker)"],
+        arity = "0..1"
+    )
+    var template: String = "freemarker"
 
     @CommandLine.Option(
         names = ["-s", "--server"],
@@ -88,9 +107,6 @@ class LaunchOptions {
     @CommandLine.Option(names = ["-ls", "--list-settings"], description = ["list configuration settings"])
     var isListConfig: Boolean = false
 
-    val template: String?
-        get() = initGroup?.template
-
     fun getSource(): File {
         return sourceValue?.let { File(it) }
             ?: File(System.getProperty("user.dir"))
@@ -110,28 +126,4 @@ class LaunchOptions {
     val isHelpNeeded: Boolean
         get() = helpRequested || !(this.isListConfig || this.isBake || this.isRunServer || this.isInit || this.sourceValue != null || this.destinationValue != null)
 
-    val isInit: Boolean
-        get() {
-            val group = initGroup
-            return group != null && group.init
-        }
-
-    internal class InitOptions {
-        @CommandLine.Option(
-            names = ["-i", "--init"],
-            paramLabel = "<target>",
-            description = ["initialises required dir structure with default templates (defaults to current directory if <source> is not supplied)"],
-            required = true
-        )
-        var init = false
-
-        @CommandLine.Option(
-            names = ["-t", "--template"],
-            defaultValue = "freemarker",
-            fallbackValue = "freemarker",
-            description = ["use specified template engine for default templates (uses Freemarker if <template> is not supplied) "],
-            arity = "0..1"
-        )
-        var template: String? = null
-    }
 }

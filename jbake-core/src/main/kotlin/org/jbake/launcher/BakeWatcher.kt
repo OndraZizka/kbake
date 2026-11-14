@@ -33,7 +33,10 @@ class BakeWatcher {
             monitor.addFile(dataPath)
             monitor.start()
         }
-        catch (e: FileSystemException) { log.error("Problems watching filesystem changes", e) }
+        catch (e: FileSystemException) {
+            log.error("Could not watch site files: ${e.message}")
+            log.debug("File watcher failure details", e)
+        }
     }
 
     private val log: Logger by logger()

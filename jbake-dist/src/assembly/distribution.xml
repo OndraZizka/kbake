@@ -8,13 +8,11 @@
     </formats>
 
     <fileSets>
-        <!-- Include the executable jar -->
+        <!-- The binary ZIP uses the self-contained shaded JAR, avoiding duplicate dependency JARs. -->
         <fileSet>
-            <directory>${project.build.directory}</directory>
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>${project.build.finalName}.jar</include>
-            </includes>
+            <directory>${project.basedir}/src/dist/bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <fileMode>0755</fileMode>
         </fileSet>
 
         <!-- Optionally include resources -->
@@ -45,5 +43,14 @@
             </includes>
         </fileSet>
     </fileSets>
+
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>/lib</outputDirectory>
+            <destName>jbake.jar</destName>
+            <fileMode>0644</fileMode>
+        </file>
+    </files>
 
 </assembly>

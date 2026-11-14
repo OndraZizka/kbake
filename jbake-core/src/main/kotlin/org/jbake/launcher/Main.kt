@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 import picocli.CommandLine
 import java.io.File
+import java.nio.file.Files
 import kotlin.system.exitProcess
 
 /**
@@ -33,8 +34,10 @@ class Main @JvmOverloads constructor(
 
             val args: LaunchOptions = parseArguments(arguments)
 
+            if (args.isInit) ensureInitDirectory(args.getSource())
+
             // Configure log level based on command line options
-            configureLogLevel(args.effectiveLogLevel)
+            configureLogLevel(args.effectiveLogLevel ?: if (args.debug) "DEBUG" else null)
 
             config = this.jBakeConfigurationFactory
                 .setEncoding(args.propertiesEncoding)
@@ -53,7 +56,9 @@ class Main @JvmOverloads constructor(
             throw JBakeExitException(SystemExit.CONFIG_ERROR, mex.message ?: mex.javaClass.simpleName, mex)
         }
         catch (e: Throwable) {
-            throw JBakeExitException(SystemExit.ERROR, "${e.javaClass.simpleName}: An unexpected error occurred: " + e.message, e)
+            val message = e.message?.takeIf { it.isNotBlank() }
+                ?: "An unexpected error occurred. Run again with --debug for diagnostic details."
+            throw JBakeExitException(SystemExit.ERROR, message, e)
         }
     }
 
@@ -98,7 +103,7 @@ class Main @JvmOverloads constructor(
             baker.bake(config)
 
         if (launchOptions.isInit)
-            initStructure(launchOptions.template!!, config)
+            initStructure(launchOptions.template, config)
 
         if (launchOptions.isRunServer) {
             watcher.start(config)
@@ -117,6 +122,19 @@ class Main @JvmOverloads constructor(
 
     private fun parseArguments(args: Array<String>): LaunchOptions {
         return CommandLine.populateCommand(LaunchOptions(), *args)
+    }
+
+    private fun ensureInitDirectory(sourceDir: File) {
+        if (sourceDir.exists()) return
+        try {
+            Files.createDirectories(sourceDir.toPath())
+        } catch (e: Exception) {
+            throw JBakeExitException(
+                SystemExit.INIT_ERROR,
+                "Cannot create site directory '${sourceDir.absolutePath}': ${e.message ?: "permission denied"}",
+                e
+            )
+        }
     }
 
     private fun printUsage(options: Any) {
@@ -151,24 +169,26 @@ class Main @JvmOverloads constructor(
         /** Runs the app with the given arguments. */
         @JvmStatic
         fun main(args: Array<String>) {
+            val debugRequested = args.any { it == "--debug" || it == "-d" || it.matches(Regex("-v{3,}")) }
             try {
                 Main().run(args)
             } catch (e: JBakeExitException) {
-                // Always print to stderr so users see errors even if logging isn't configured
-                System.err.println("ERROR: ${e.message}")
-                e.cause?.let {
-                    System.err.println("Cause: ${it.message}")
-                    it.printStackTrace(System.err)
+                System.err.println("Error: ${e.message ?: "JBake could not complete the requested operation."}")
+                if (debugRequested) {
+                    e.printStackTrace(System.err)
+                } else {
+                    System.err.println("Run again with --debug for diagnostic details.")
                 }
                 log.error(e.message)
-                log.debug(e.message, e)
                 if (e.cause is CommandLine.MissingParameterException) printUsage()
                 exitProcess(e.getExit())
             }
             catch (e: Throwable) {
-                System.err.println("ERROR: ${e.javaClass.simpleName}: ${e.message}")
-                e.printStackTrace(System.err)
-                log.error(e.message, e)
+                System.err.println("Error: ${e.message ?: "JBake could not complete the requested operation."}")
+                if (debugRequested) e.printStackTrace(System.err)
+                else System.err.println("Run again with --debug for diagnostic details.")
+                log.error(e.message)
+                exitProcess(SystemExit.ERROR.errorNumber)
             }
         }
 

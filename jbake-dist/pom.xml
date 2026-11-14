@@ -5,7 +5,7 @@
     <parent>
         <groupId>ch.zizka.jbake</groupId>
         <artifactId>jbake-base</artifactId>
-        <version>6.0.0-r1</version>
+        <version>5.0.0-rc1</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -50,9 +50,9 @@
         <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy-dateutil</artifactId></dependency>
 
         <!-- Test Dependencies -->
-        <dependency><scope>test</scope><groupId>org.eclipse.jgit</groupId><artifactId>org.eclipse.jgit</artifactId></dependency>
         <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-runner-junit5</artifactId></dependency>
         <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-assertions-core</artifactId></dependency>
+        <dependency><scope>test</scope><groupId>org.testcontainers</groupId><artifactId>testcontainers</artifactId></dependency>
         <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-framework-engine</artifactId></dependency>
     </dependencies>
 
@@ -97,22 +97,6 @@
                         <exclude>**/ProjectWebsiteTest.class</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase><goals><goal>single</goal></goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/distribution.xml</descriptor>
-                            </descriptors>
-                            <finalName>${app.name}-${project.version}</finalName>
-                            <appendAssemblyId>true</appendAssemblyId>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -251,6 +235,23 @@
                 </executions>
             </plugin>
 
+            <!-- Build the binary archive in verify, after Shade has produced the executable JAR. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase><goals><goal>single</goal></goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/distribution.xml</descriptor>
+                            </descriptors>
+                            <finalName>${app.name}-${project.version}</finalName>
+                            <appendAssemblyId>true</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
@@ -260,6 +261,10 @@
                         <include>**/BuiltInProjectsTest.*</include>
                         <include>**/ProjectWebsiteTest.*</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <jbake.texy.image>jbake/texy-service:${project.version}</jbake.texy.image>
+                        <jbake.launcher.path>${project.build.directory}/appassembler/bin/jbake</jbake.launcher.path>
+                    </systemPropertyVariables>
                     <!-- Keep these here: -->
                     <!--<argLine>-Xms512m -Xmx3g -Dorientdb.installCustomFormatter=false -Djna.nosys=true -XX:MaxDirectMemorySize=2g</argLine> Keep-->
                     <!--<forkCount>5</forkCount>   Helps but now I need serial for logs. -->

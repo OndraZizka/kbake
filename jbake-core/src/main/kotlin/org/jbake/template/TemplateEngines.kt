@@ -66,7 +66,8 @@ class TemplateEngines(config: JBakeConfiguration, db: ContentStore) {
                 }
             }
         } catch (e: IOException) {
-            log.error("Error loading engines", e)
+            log.error("Could not load template engines: ${e.message}")
+            log.debug("Template engine loading failure details", e)
         }
     }
 

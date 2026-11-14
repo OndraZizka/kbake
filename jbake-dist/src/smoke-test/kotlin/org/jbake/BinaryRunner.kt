@@ -50,8 +50,13 @@ class BinaryRunner(private val workingDir: File) {
 
         val jbakeExecutableRelative: File
             get() {
+                System.getProperty("jbake.launcher.path")?.let { configuredPath ->
+                    return File(configuredPath).takeIf { it.isFile }
+                        ?: throw IllegalStateException("Configured JBake launcher was not found: $configuredPath")
+                }
+
                 // Check Gradle path first (relative to jbake-dist working directory)
-                val gradleFile: File = File(gradlePath).let { if(it.exists()) return it else it }
+                val gradleFile: File = File(gradlePath).let { if (it.exists()) return it else it }
 
                 // Fall back to Maven path
                 val mavenFile: File = File(mavenPath).let { if(it.exists()) return it else it }

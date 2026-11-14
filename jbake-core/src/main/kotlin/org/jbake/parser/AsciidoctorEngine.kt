@@ -173,7 +173,10 @@ class AsciidoctorEngine : MarkupEngine() {
                             val localDate = LocalDate.parse(convertedValue, dateFormat)
                             context.date = localDate.atStartOfDay().atOffset(ZoneOffset.UTC)
                         }
-                        .onFailure { log.error("Unable to parse revdate '$convertedValue'. Expected format: $dateFormat", it) }
+                        .onFailure {
+                            log.error("Unable to parse revdate '$convertedValue'. Expected format: $dateFormat")
+                            log.debug("Revdate parsing failure details", it)
+                        }
                 }
             }
 

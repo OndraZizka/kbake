@@ -4,7 +4,9 @@ import org.jbake.app.ContentStore
 import org.jbake.app.RenderingException
 import org.jbake.app.configuration.JBakeConfiguration
 import org.jbake.template.model.JbakeTemplateModel
+import org.jbake.util.convertTemporalValues
 import java.io.Writer
+import java.time.ZoneId
 
 /**
  * A template engine is responsible for converting a model into a rendered document. The model
@@ -49,5 +51,11 @@ interface TemplateEngineAdapter<Type> {
         override fun adapt(key: String, extractedValue: Any): Any {
             return extractedValue
         }
+    }
+
+    /** Convert Java time values returned by lazy extractors for engines using legacy date helpers. */
+    class JavaUtilDateAdapter(private val zoneId: ZoneId = ZoneId.systemDefault()) : TemplateEngineAdapter<Any> {
+        override fun adapt(key: String, extractedValue: Any): Any =
+            convertTemporalValues(extractedValue, zoneId) ?: ""
     }
 }

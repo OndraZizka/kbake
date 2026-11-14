@@ -69,7 +69,7 @@ class JadeTemplateEngine(config: JBakeConfiguration, db: ContentStore) : Abstrac
                 super.get(key)?.let { return it }
 
                 return try {
-                    extractors.extractAndTransform(db, key, this, TemplateEngineAdapter.NoopAdapter())
+                    extractors.extractAndTransform(db, key, this, TemplateEngineAdapter.JavaUtilDateAdapter())
                 } catch (e: NoModelExtractorException) {
                     model[key]
                 }

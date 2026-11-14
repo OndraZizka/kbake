@@ -4,7 +4,7 @@
 
     <groupId>ch.zizka.jbake</groupId>
     <artifactId>jbake-base</artifactId>
-    <version>6.0.0-r1</version>
+    <version>5.0.0-rc1</version>
     <packaging>pom</packaging>
 
     <name>jbake-base</name>
@@ -51,10 +51,10 @@
 
     <modules>
         <module>jbake-core</module>
+        <module>jbake-texy-service</module>
         <module>jbake-dist</module>
         <module>jbake-maven-plugin</module>
         <module>jbake-e2e-tests</module>
-        <module>jbake-texy-service</module>
     </modules>
 
     <properties>
@@ -355,8 +355,6 @@
                     <execution><id>testCompile-after-kotlin</id><phase>test-compile</phase><goals><goal>testCompile</goal></goals></execution>
                 </executions>
                 <configuration>
-                    <sourceDirectory>src/main/kotlin</sourceDirectory>
-                    <testSourceDirectory>src/test/kotlin</testSourceDirectory>
                     <source>${version.java}</source>
                     <excludes><exclude>**/*.kt</exclude></excludes>
                 </configuration>

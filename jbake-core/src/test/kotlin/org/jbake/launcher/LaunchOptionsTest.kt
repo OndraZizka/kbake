@@ -1,6 +1,5 @@
 package org.jbake.launcher
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.jbake.app.configuration.ConfigUtil
@@ -68,12 +67,12 @@ class LaunchOptionsTest : StringSpec({
         res.sourceValue shouldBe "/tmp"
     }
 
-    "shouldThrowAnExceptionCallingTemplateWithoutInitOption" {
+    "templateOptionDoesNotRequireInit" {
         val args = arrayOf("-t", "groovy-mte")
-
-        shouldThrow<CommandLine.MissingParameterException> {
-            parseArgs(args)
-        }
+        val res = parseArgs(args)
+        res.isInit shouldBe false
+        res.template shouldBe "groovy-mte"
+        res.isHelpNeeded shouldBe true
     }
 
     "bake" {
@@ -81,6 +80,18 @@ class LaunchOptionsTest : StringSpec({
         val res = parseArgs(args)
 
         res.isBake shouldBe true
+        res.isInit shouldBe false
+    }
+
+    "debugOption" {
+        val res = parseArgs(arrayOf("--debug"))
+        res.debug shouldBe true
+    }
+
+    "bakeDoesNotRequireInitOption" {
+        val res = parseArgs(arrayOf("-b"))
+        res.isBake shouldBe true
+        res.isInit shouldBe false
     }
 
     "listConfig" {

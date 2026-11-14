@@ -98,7 +98,8 @@ abstract class MarkupEngine : ParserEngine {
                 return lines
             }
         } catch (e: IOException) {
-            log.error("Error while opening file $file", e)
+            log.error("Could not read '$file': ${e.message}")
+            log.debug("Content read failure details", e)
             return mutableListOf()
         }
     }

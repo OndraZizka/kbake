@@ -16,7 +16,12 @@ class Init(private val config: JBakeConfiguration) {
      * @throws Exception if required directory structure can't be achieved without content overwriting.
      */
     fun run(outputDir: File, templateDir: File, templateType: String) {
-        if (!outputDir.canWrite()) throw Exception("Output dir is not writeable!")
+        if (outputDir.exists() && !outputDir.isDirectory)
+            throw Exception("Output path is not a directory: ${outputDir.absolutePath}")
+        if (!outputDir.exists() && !outputDir.mkdirs())
+            throw Exception("Cannot create output directory: ${outputDir.absolutePath}")
+        if (!outputDir.canWrite())
+            throw Exception("Output directory is not writable: ${outputDir.absolutePath}")
 
         val contents = outputDir.listFiles()
         var somethingAlreadyExists = false
@@ -34,8 +39,7 @@ class Init(private val config: JBakeConfiguration) {
         val exampleProjectName = config.getExampleProjectByType(templateType)
             ?: throw Exception("No known example project for template type '$templateType'.")
 
-        // Try loading from classpath first (when running from jar)
-        // TODO: Handle exceptions
+        // Try loading from the bundled classpath first (for packaged distributions).
         val resourceStream = javaClass.classLoader.getResourceAsStream(exampleProjectName)
         if (resourceStream != null) {
             ZipUtil.extract(resourceStream, outputDir)
@@ -47,8 +51,7 @@ class Init(private val config: JBakeConfiguration) {
         if (!templateFile.exists())
             throw Exception("Cannot find example project file: $exampleProjectName (tried classpath and filesystem at ${templateFile.path})")
 
-        // TODO: Handle exceptions
-        // TODO: Document what these files are supposed to be and how to build them.
+        // Fall back to the configured build output for development/test runs.
         ZipUtil.extract(FileInputStream(templateFile), outputDir)
     }
 }

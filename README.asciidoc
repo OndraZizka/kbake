@@ -15,7 +15,7 @@ image:https://github.com/jbake-org/jbake/actions/workflows/maven-build.yml/badge
 
 == News
 
-*2026-02-10:* 5.0.0 expected to be released within February.
+*2026-11-14:* The Maven `5.0.0-rc1` verification build and full OZ.cz website bake pass locally.
 
 
 == Documentation
@@ -91,7 +91,7 @@ To build the JBake distribution ZIP file:
 $ ./gradlew distZip
 ----
 
-This will build a ZIP file in the `jbake-dist/build/distributions` folder.W
+This will build a ZIP file in the `jbake-dist/build/distributions` folder.
 
 === Building with Maven
 
@@ -99,8 +99,10 @@ To build the project with Maven:
 
 ----
 $ export JAVA_HOME=/path/to/jdk-17
-$ mvn clean install
+$ mvn clean verify
 ----
+
+This builds the binary distribution and runs unit and end-to-end checks. Add `install` to install the artifacts into your local Maven repository.
 
 For more information see link:BUILD.adoc[Build Guide]
 
@@ -185,7 +187,7 @@ Licensed under the MIT License, see the link:LICENSE[LICENSE] file for details.
 * Rename to avoid confusion with the original project
 * Publish to SDKMAN
 * Set up a website for this fork
-* Check if the maven plugin works
+* Add automated integration coverage for all Maven plugin goals (the `generate` goal was manually verified for 5.0.0-rc1).
 * Rename jbake-base to jbake-root
 * Refactor the Map-backed models to use the reified inline trick for type-safe accessors.
 * Solve the shader warnings - duplicate classes between dependencies.

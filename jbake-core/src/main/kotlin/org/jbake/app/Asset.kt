@@ -42,7 +42,8 @@ class Asset(private val config: JBakeConfiguration) {
             log.info("Copying single asset file to [${targetFile.path}]")
             copyFileOrAddError(asset, targetFile)
         } catch (io: IOException) {
-            log.error("Failed to copy the asset file.", io)
+            log.error("Failed to copy asset '${asset.path}': ${io.message}")
+            log.debug("Asset copy failure details", io)
         }
     }
 
@@ -62,7 +63,8 @@ class Asset(private val config: JBakeConfiguration) {
                 return true
         }
         catch (ioe: IOException) {
-            log.error("Unable to determine the path to asset file ${fileToValidate.path}", ioe)
+            log.error("Unable to determine whether '${fileToValidate.path}' is an asset: ${ioe.message}")
+            log.debug("Asset path check details", ioe)
         }
         return false
     }
@@ -120,7 +122,8 @@ class Asset(private val config: JBakeConfiguration) {
             log.info("Copied: " + sourceFile.path)
         }
         catch (e: Exception) {
-            log.error("Copying '${sourceFile.path}' failed: ${e.message}", e)
+            log.error("Copying '${sourceFile.path}' failed: ${e.message ?: "unknown I/O error"}")
+            log.debug("Asset copy failure details", e)
             errors.add(e)
         }
     }

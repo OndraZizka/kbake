@@ -31,9 +31,9 @@ class DocumentsRenderingTool : RenderingTool {
                 db.markContentAsRendered(document)
                 renderedCount++
             } catch (e: Exception) {
-                // Log full stacktrace to help debugging in tests
-                log.error("Error rendering document ${document.name} (type=${document.type})", e)
-                errors.add(e.message ?: (e.toString() + " " + e.stackTrace.first().toString()))
+                log.error("Error rendering '${document.name}' (type=${document.type}): ${e.message ?: e.javaClass.simpleName}")
+                log.debug("Document rendering failure details", e)
+                errors.add(e.message ?: e.javaClass.simpleName)
             }
         }
 

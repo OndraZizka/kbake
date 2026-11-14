@@ -144,7 +144,10 @@ class ParserEnginesRegistry private constructor() {
                     }
                 }
             }
-            catch (e: IOException) { log.error("Error loading Engines: ${e.message}", e) }
+            catch (e: IOException) {
+                log.error("Could not load markup engines: ${e.message}")
+                log.debug("Markup engine loading failure details", e)
+            }
         }
 
         private fun registerEngine(className: String, vararg extensions: String) {
@@ -158,4 +161,3 @@ class ParserEnginesRegistry private constructor() {
         }
     }
 }
-

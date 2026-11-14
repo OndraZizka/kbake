@@ -5,7 +5,7 @@
     <parent>
         <groupId>ch.zizka.jbake</groupId>
         <artifactId>jbake-base</artifactId>
-        <version>6.0.0-r1</version>
+        <version>5.0.0-rc1</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -111,5 +111,4 @@
 
     </build>
 </project>
-
 

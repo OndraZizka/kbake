@@ -48,6 +48,7 @@ dependencies {
 }
 
 test {
+    dependsOn ':jbake-dist:jibDockerBuild'
     useJUnitPlatform()
 
     testLogging {
@@ -58,6 +59,7 @@ test {
 
     // Pass test data directory location
     systemProperty "jbake.test.data.dir", "${projectDir}/../test-data/fixture"
+    systemProperty "jbake.image.tag", project.version.toString()
 
     // Docker API version for compatibility with modern Docker (1.44+)
     systemProperty "DOCKER_API_VERSION", "1.44"
@@ -86,4 +88,3 @@ kotlin {
 repositories {
     mavenCentral()
 }
-

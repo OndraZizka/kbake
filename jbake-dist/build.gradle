@@ -60,8 +60,8 @@ dependencies {
     implementation "io.pebbletemplates:pebble:$pebbleVersion"
     // Note: Groovy templates are provided by groovy-templates which is already a transitive dependency
 
-    smokeTestImplementation "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
     smokeTestImplementation "org.apache.commons:commons-vfs2:$commonsVfs2Version"
+    smokeTestImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
     smokeTestImplementation "io.kotest:kotest-runner-junit5:$kotestVersion"
     smokeTestImplementation "io.kotest:kotest-assertions-core:$kotestVersion"
     smokeTestImplementation "io.kotest:kotest-framework-engine:$kotestVersion"
@@ -71,6 +71,7 @@ dependencies {
 
 tasks.register('smokeTest', Test) {
     dependsOn installDist
+    dependsOn ':jbake-texy-service:assemble'
     group 'Verification'
     description 'Runs the integration tests.'
     setTestClassesDirs sourceSets.smokeTest.output.classesDirs

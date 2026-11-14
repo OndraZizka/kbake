@@ -63,8 +63,10 @@ open class GenerateMojo : AbstractMojo() {
             log.info("JBake generation completed successfully")
         }
         catch (e: Exception) {
-            log.error("JBake generation failed for input: ${inputDirectory!!.path}, output: ${outputDirectory!!.path} - ${e.message}", e)
-            throw MojoExecutionException("Failed to generate site from ${inputDirectory!!.path}", e)
+            val message = e.message ?: "unknown rendering error"
+            log.error("JBake generation failed for '${inputDirectory!!.path}': $message")
+            log.debug("JBake generation failure details", e)
+            throw MojoExecutionException("Failed to generate site from ${inputDirectory!!.path}: $message", e)
         }
     }
 

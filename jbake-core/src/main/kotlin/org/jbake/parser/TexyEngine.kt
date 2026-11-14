@@ -38,7 +38,8 @@ class TexyEngine : MarkupEngine() {
             log.debug("Successfully rendered Texy content")
         }
         catch (e: Exception) {
-            log.error("Error rendering Texy content: ${e.message}", e)
+            log.error("Could not render Texy content: ${e.message ?: "Texy service request failed."}")
+            log.debug("Texy rendering failure details", e)
             // Fallback: keep the original content wrapped in a pre tag to indicate processing failed
             parserContext.body = "<pre>Error rendering Texy content: ${e.message}\n\n${parserContext.body}</pre>"
         }
@@ -106,5 +107,4 @@ class TexyEngine : MarkupEngine() {
         private val log: Logger by logger()
     }
 }
-
 

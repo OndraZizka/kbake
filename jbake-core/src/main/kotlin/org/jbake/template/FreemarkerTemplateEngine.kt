@@ -48,7 +48,8 @@ class FreemarkerTemplateEngine(config: JBakeConfiguration, db: ContentStore) : A
         try {
             templateCfg.setDirectoryForTemplateLoading(config.templateDir)
         } catch (e: Exception) {
-            log.warn("Failed to set template directory: ${e.message}", e)
+            log.warn("Could not load templates from '${config.templateDir}': ${e.message}")
+            log.debug("Template directory failure details", e)
         }
     }
 

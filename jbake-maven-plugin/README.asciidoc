@@ -8,7 +8,7 @@ the following Maven coordinates:
 
 ----
 <dependency>
-    <groupId>org.jbake</groupId>
+    <groupId>ch.zizka.jbake</groupId>
     <artifactId>jbake-maven-plugin</artifactId>
     <version>...</version>
 </dependency>
@@ -28,7 +28,7 @@ To use JBake Maven Plugin in your build add the plugin into your pom.xml as show
     <plugins>
     ...
         <plugin>
-            <groupId>org.jbake</groupId>
+            <groupId>ch.zizka.jbake</groupId>
             <artifactId>jbake-maven-plugin</artifactId>
             <version>...</version><!-- Same version as JBake -->
             <configuration>

@@ -14,8 +14,8 @@
 
 The project supports both {gradle-home} and {maven-home} as build systems.
 
-* **Gradle** - The original build system, using Gradle 9
-* **Maven** - Full Maven support with synchronized dependencies
+* **Maven** - The release build, with the canonical 5.0.0-rc1 version and full verification lifecycle
+* **Gradle** - An alternative build system, using Gradle 9
 * **Kotlin** - The codebase includes {kotlin} code with proper documentation generation
 
 This document covers common tasks for developing, building and deploying JBake.
@@ -147,6 +147,12 @@ Waiting for changes to input files of tasks... (ctrl-d to exit)
 The `jbake-dist` module has a task called `smokeTest`.
 It executes the produced application, initializes a jbake project for each supported example project and bake it.
 
+The Maven `verify` phase runs the built-in project checks and bakes the OZ.cz website when its source is available.
+By default the test looks for `~/uw/ondra.zizka.cz-web`; set `JBAKE_WEBSITE_DIR` or `-Djbake.website.dir=/path/to/site` to select another checkout.
+Without that checkout it uses a small checked-in fixture. For a local full-site preview that remains under `jbake-dist/target/website-preview`, add `-Djbake.website.keepOutput=true`.
+
+The five `example_project_*.zip` files in `jbake-core/src/main/resources` are bundled templates for `jbake --init`; keeping them there makes Maven builds self-contained and lets the CLI initialize sites offline.
+
 The `check` task depends on the `smokeTest` task and is part of the travis CI execution.
 You can find the report at `jbake-dist/build/reports/tests/smokeTest/`
 
@@ -187,14 +193,14 @@ The `build` task assembles and tests the project.
 
 **Maven:**
 ----
-mvn clean package
+mvn clean verify
 ----
 
 This compiles code, runs tests, generates javadocs, creates distribution packages, and runs checks.
 
 **Gradle output:** `jbake-dist/build/distributions/jbake-{version}-bin.zip`
 
-**Maven output:** `jbake-dist/target/jbake-{version}-bin.zip`
+**Maven output:** `jbake-dist/target/jbake-{version}-bin.zip` (created in the `verify` phase after the executable JAR is shaded)
 
 === Install local
 

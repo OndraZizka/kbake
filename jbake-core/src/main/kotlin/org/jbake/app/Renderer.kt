@@ -48,7 +48,8 @@ class Renderer {
             }
             log.info("Rendering done: ${outputFile.absolutePath}")
         } catch (e: Exception) {
-            log.error("Rendering failed: ${outputFile.absolutePath} - ${e.message}", e)
+            log.error("Rendering failed for '${outputFile.absolutePath}': ${e.message ?: "unknown template error"}")
+            log.debug("Rendering failure details", e)
             throw Exception("Failed to render file ${outputFile.absolutePath} - ${e.message}", e)
         }
     }
@@ -99,7 +100,8 @@ class Renderer {
             }
             log.info("Rendered: $finalOutputFile")
         } catch (e: Exception) {
-            log.error("Rendering failed: $finalOutputFile : ${e.message}", e)
+            log.error("Rendering failed for '$finalOutputFile': ${e.message ?: "unknown template error"}")
+            log.debug("Rendering failure details", e)
             throw Exception("Failed to render file ${finalOutputFile.absolutePath}: ${e.message}", e)
         }
     }
@@ -124,8 +126,9 @@ class Renderer {
             log.info("Rendered: ${renderConfig.name} $outputFile")
         }
         catch (e: Exception) {
-            val message = "Failed to render renderConfig '${renderConfig.name}' into $outputFile: ${e.javaClass.simpleName} ${e.message}"
-            log.error("$message Rethrowing", e)
+            val message = "Failed to render '${renderConfig.name}' to '$outputFile': ${e.message ?: "unknown template error"}"
+            log.error(message)
+            log.debug("Render configuration failure details", e)
             throw Exception(message, e)
         }
     }

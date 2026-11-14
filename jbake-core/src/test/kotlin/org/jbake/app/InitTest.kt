@@ -40,6 +40,12 @@ class InitTest : StringSpec({
         initPath.resolve("testfile.txt").shouldExist()
     }
 
+    "initCreatesMissingOutputDirectory" {
+        val newInitPath = tempDir.resolve("new-site")
+        init.run(newInitPath, rootPath, "freemarker")
+        newInitPath.resolve("testfile.txt").shouldExist()
+    }
+
     "initFailDestinationContainsContent" {
         File(initPath.path, config.contentDirName ?: "content").mkdir()
 

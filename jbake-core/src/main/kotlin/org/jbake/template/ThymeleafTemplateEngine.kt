@@ -8,11 +8,13 @@ import org.jbake.app.configuration.JBakeConfiguration
 import org.jbake.model.ModelAttributes
 import org.jbake.template.model.JbakeTemplateModel
 import org.jbake.util.PathUtils
+import org.jbake.util.convertTemporalValues
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 import org.thymeleaf.context.LazyContextVariable
 import org.thymeleaf.templateresolver.FileTemplateResolver
 import java.io.Writer
+import java.time.ZoneId
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
@@ -101,15 +103,15 @@ class ThymeleafTemplateEngine(config: JBakeConfiguration, db: ContentStore) : Ab
                 val adapter = object : TemplateEngineAdapter<LazyContextVariable<*>> {
 
                     override fun adapt(key: String, extractedValue: Any): LazyContextVariable<*> {
-                        return when (key) {
-                            ModelAttributes.TAGS_ALL -> object : LazyContextVariable<MutableSet<*>>() { override fun loadValue() = extractedValue as MutableSet<*>? }
-                            ModelAttributes.GLOB_PUBLISHING_DATE_FORMATTED -> object : LazyContextVariable<Any>() {
-                                override fun loadValue(): Any? = when (extractedValue) {
-                                    is java.time.OffsetDateTime -> Date.from(extractedValue.toInstant())
-                                    else -> extractedValue
-                                }
+                        if (key == ModelAttributes.TAGS_ALL) {
+                            return object : LazyContextVariable<MutableSet<*>>() {
+                                override fun loadValue() = extractedValue as MutableSet<*>
                             }
-                            else -> object : LazyContextVariable<Any>() { override fun loadValue(): Any = extractedValue }
+                        }
+
+                        val converted = convertTemporalValues(extractedValue, ZoneId.systemDefault())
+                        return object : LazyContextVariable<Any?>() {
+                            override fun loadValue(): Any? = converted
                         }
                     }
                 }

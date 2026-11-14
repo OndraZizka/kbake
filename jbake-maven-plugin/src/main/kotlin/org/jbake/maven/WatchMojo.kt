@@ -42,7 +42,8 @@ open class WatchMojo : GenerateMojo() {
                         }
                     }
                     catch (exc: Exception) {
-                        log.error("Error in input handler thread: ${exc.message}", exc)
+                        log.error("Watch input handler failed: ${exc.message}")
+                        log.debug("Watch input handler failure details", exc)
                     }
                     finally {
                         done.set(true)
@@ -63,8 +64,10 @@ open class WatchMojo : GenerateMojo() {
             } while (!done.get())
         }
         catch (exc: Exception) {
-            log.error("Watch mode failed: ${exc.message}", exc)
-            throw MojoExecutionException("Failed to watch directory: ${inputDirectory!!.path}", exc)
+            val message = exc.message ?: "unknown file watcher error"
+            log.error("Watch mode failed for '${inputDirectory!!.path}': $message")
+            log.debug("Watch mode failure details", exc)
+            throw MojoExecutionException("Failed to watch directory '${inputDirectory!!.path}': $message", exc)
         }
         finally {
             log.info("Shutting down watch mode for directory: ${inputDirectory!!.path}")

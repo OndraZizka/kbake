@@ -30,7 +30,10 @@ class YamlEngine : MarkupEngine() {
                 }
             }
         }
-        catch (e: IOException) { log.error("Error while parsing YAML file $file", e) }
+        catch (e: IOException) {
+            log.error("Could not read YAML file '$file': ${e.message}")
+            log.debug("YAML read failure details", e)
+        }
         return model
     }
 
