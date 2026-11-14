@@ -1,5 +1,5 @@
       <div class="footer">
-        <p>&copy; Jonathan Bullock 2013 | Mixed with <a href="http://twitter.github.com/bootstrap/">Bootstrap v2.3.1</a> | Baked with <a href="http://jbake.org">JBake ${version}</a></p>
+        <p>&copy; Jonathan Bullock 2013 | Mixed with <a href="http://twitter.github.com/bootstrap/">Bootstrap v2.3.1</a> | Baked with <a href="http://jbake.org">KBake ${version}</a></p>
       </div>
 
     </div> <!-- /container -->

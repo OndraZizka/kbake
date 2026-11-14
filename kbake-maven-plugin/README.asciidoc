@@ -1,0 +1,100 @@
+= KBake Maven Plugin
+Jonathan Bullock
+2021-04-20
+:idprefix:
+
+KBake Maven Plugin is a Maven plugin allowing you to integrate https://github.com/OndraZizka/kbake[KBake] into your projects build. This is the official version published at
+the following Maven coordinates:
+
+----
+<dependency>
+    <groupId>ch.zizka.kbake</groupId>
+    <artifactId>kbake-maven-plugin</artifactId>
+    <version>...</version>
+</dependency>
+----
+
+The KBake Maven Plugin version now matches the KBake version.
+
+Special thanks must go to the original author of this plugin - https://github.com/aldrinleal[Aldrin Leal].
+
+== Usage
+
+To use KBake Maven Plugin in your build add the plugin into your pom.xml as shown below:
+
+----
+<build>
+...
+    <plugins>
+    ...
+        <plugin>
+            <groupId>ch.zizka.kbake</groupId>
+            <artifactId>kbake-maven-plugin</artifactId>
+            <version>...</version><!-- Same version as KBake -->
+            <configuration>
+                <!--<inputDirectory>${project.basedir}/src/main/resources</inputDirectory>-->
+                <!--<outputDirectory>${project.build.directory}/classes</outputDirectory>-->
+            </configuration>
+            <executions>
+                <execution>
+                    <id>default-generate</id>
+                    <phase>generate-resources</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+       ...
+    </plugins>
+...
+</build>
+----
+
+=== Dependencies
+
+The plugin automatically includes all optional dependencies of `kbake-core`,
+including freemarker, thymeleaf, asciidoctor, flexmark (markdown), etc.
+This makes it easy to get started with the plugin.
+It also reduces maintenance when upgrading to a new KBake version,
+because you don't need to align the versions of freemarker, thymeleaf, asciidoctor, flexmark, etc.
+
+However, if you want your build to only download the bare minimum it needs,
+you can use `<exclusions>` to exclude the dependencies you don't need.
+
+An example of the plugin being used can be found in this project: https://github.com/jonbullock/maven-jbake-site[https://github.com/jonbullock/maven-jbake-site]
+
+== Goals
+
+There are 4 goals provided by this plugin:
+
+* `kbake:seed` - seeds your project/site with example content and templates
+* `kbake:generate` - bakes your project/site
+* `kbake:watch` - watches to changes and bakes your site whenever a change is detected
+* `kbake:inline` - bakes, watches and serves out content on http://localhost:8820[http://localhost:8820]
+
+You can also more details on each goal by running the help goal:
+
+----
+$ mvn kbake:help -Ddetail # -DgoalName=[seed|generate|watch|inline]
+----
+
+== Versioning
+
+The project adopts the http://semver.org[Semantic Versioning] spec to maintain an understandable backwards compatibility strategy.
+
+The version format is as follows:
+
+----
+<major>.<minor>.<patch>-<label>
+----
+
+* An increment of the major version represents incompatible API changes.
+* An increment of the minor version represents additional functionality in a backwards-compatible manner.
+* An increment of the patch version represents backwards-compatible bug fixes.
+* Existence of a label represents a pre-release or build metadata.
+
+== Copyright & License
+
+This plugin is licensed under the Apache 2.0 License.
+KBake itself is licensed under the MIT license.

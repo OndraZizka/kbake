@@ -1,17 +1,17 @@
-= JBake
+= KBake
 Ondrej Zizka, Jonathan Bullock
 2025-12-01
 :idprefix:
 
-http://jbake.org[JBake] is a Java based open source static site/blog generator for developers.
+https://github.com/OndraZizka/kbake[KBake] is an open-source static site and blog generator for developers.
 
-NOTE: This is a fork maintained by Ondrej Zizka with modernizations including Kotlin 2.2 and JDK 17+.
+NOTE: KBake is Ondrej Zizka's modernization of upstream JBake 2.x, using Kotlin 2.2 and JDK 17+.
 
-image:https://img.shields.io/github/v/release/OndraZizka/jbake?label=download&sort=semver["GitHub Release Download", link="https://github.com/OndraZizka/jbake/releases/latest"]
-image:https://img.shields.io/maven-central/v/ch.zizka.jbake/jbake-core.svg["Maven Central", link="https://central.sonatype.com/artifact/ch.zizka.jbake/jbake-core"]
-image:https://github.com/jbake-org/jbake/actions/workflows/maven-build.yml/badge.svg["Maven Tests", link="https://github.com/jbake-org/jbake/actions/workflows/maven-build.yml"]
+image:https://img.shields.io/github/v/release/OndraZizka/kbake?label=download&sort=semver["GitHub Release Download", link="https://github.com/OndraZizka/kbake/releases/latest"]
+image:https://img.shields.io/maven-central/v/ch.zizka.kbake/kbake-core.svg["Maven Central", link="https://central.sonatype.com/artifact/ch.zizka.kbake/kbake-core"]
+image:https://github.com/OndraZizka/kbake/actions/workflows/maven-build.yml/badge.svg["Maven Tests", link="https://github.com/OndraZizka/kbake/actions/workflows/maven-build.yml"]
 
-*Version:* 5.0.0-rc1 | *Group ID:* `ch.zizka.jbake`
+*Version:* 5.0.0-rc1 | *Group ID:* `ch.zizka.kbake`
 
 == News
 
@@ -20,7 +20,7 @@ image:https://github.com/jbake-org/jbake/actions/workflows/maven-build.yml/badge
 
 == Documentation
 
-Original documentation is available on http://jbake.org/docs/[jbake.org].
+Upstream JBake documentation is available at http://jbake.org/docs/[jbake.org].
 
 Additional documentation for this fork:
 
@@ -34,7 +34,7 @@ We welcome all contributions to the project both big and small. From new feature
 the documentation. Please don't hesitate to submit an issue.
 
 The link:CONTRIBUTING.asciidoc[Contributing] guide provides information on how to submit an issue or create a pull request to fix a bug or
-add a new feature to JBake.
+add a new feature to KBake.
 
 == Versioning
 
@@ -54,18 +54,16 @@ The version format is as follows:
 
 == Community
 
-Talk to the developers behind JBake:
+The following community links belong to upstream JBake:
 
 * http://groups.google.com/group/jbake-dev[Mailing list]
 * link:irc://irc.freenode.net/#jbake[IRC - #jbake on Freenode]
-
-Talk to other users of JBake on the forum:
 
 * http://groups.google.com/group/jbake-user[Forum]
 
 == Docker Image
 
-The image uses Maven with JDK 17 to build JBake and
+The image uses Maven with JDK 17 to build KBake and
 https://hub.docker.com/_/eclipse-temurin[eclipse-temurin:17-jre-alpine] for runtime.
 
 === Build
@@ -73,7 +71,7 @@ https://hub.docker.com/_/eclipse-temurin[eclipse-temurin:17-jre-alpine] for runt
 To build the Docker image:
 
 ----
-$ docker build -t jbake/jbake:latest .
+$ docker build -t kbake/kbake:latest .
 ----
 
 
@@ -109,7 +107,7 @@ Settings -> Plugins -> CheckStyle-IDEA
 Settings -> Other Settings -> Checksytle
 +
 Add a new _Configuration File_.
-Enter a Description like "jbake Checkstyle" and choose "Use a local Checkstyle file".
+Enter a Description like "KBake Checkstyle" and choose "Use a local Checkstyle file".
 The checkstyle File is located at the project root path `config/checkstyle/checkstyle.xml`
 
 * Add to Editor Code Style Scheme
@@ -165,16 +163,15 @@ Licensed under the MIT License, see the link:LICENSE[LICENSE] file for details.
 
 * Update documentation to reflect changes in this fork
 * Add more integration tests
-* Rename to avoid confusion with the original project
 * Publish to SDKMAN
 * Set up a website for this fork
 * Add automated integration coverage for all Maven plugin goals (the `generate` goal was manually verified for 5.0.0-rc1).
-* Rename jbake-base to jbake-root
+* Consider renaming the `kbake-base` parent artifact to `kbake-parent`
 * Refactor the Map-backed models to use the reified inline trick for type-safe accessors.
 * Solve the shader warnings - duplicate classes between dependencies.
-* Split jbake-dist into one module per database.
+* Split kbake-dist into one module per database.
   * Or at least make Neo4j optional.
-* Distribute also jbake-core for those who use it as a library.
+* Distribute also kbake-core for those who use it as a library.
 * Add GitHub Actions for publishing to Maven Central.
 * Add code coverage reporting.
 * Logging:

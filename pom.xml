@@ -2,28 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.zizka.jbake</groupId>
-    <artifactId>jbake-base</artifactId>
+    <groupId>ch.zizka.kbake</groupId>
+    <artifactId>kbake-base</artifactId>
     <version>5.0.0-rc1</version>
     <packaging>pom</packaging>
 
-    <name>jbake-base</name>
+    <name>KBake parent</name>
     <description>
-        JBake is a Java based open source static site/blog generator for developers.
-        This is a fork of JBake 2.x, modernized to use latest libraries and JDK 17+.
+        KBake is an open source static site/blog generator for developers.
+        It is a modernization of the upstream JBake 2.x project.
     </description>
-    <url>https://github.com/OndraZizka/jbake</url>
+    <url>https://github.com/OndraZizka/kbake</url>
     <inceptionYear>2012</inceptionYear>
 
     <scm>
-        <url>https://github.com/OndraZizka/jbake</url>
-        <connection>scm:git:git@github.com:OndraZizka/jbake.git</connection>
-        <developerConnection>scm:git:git@github.com:OndraZizka/jbake.git</developerConnection>
-        <tag>jbake-base-5.0.0-rc1</tag>
+        <url>https://github.com/OndraZizka/kbake</url>
+        <connection>scm:git:git@github.com:OndraZizka/kbake.git</connection>
+        <developerConnection>scm:git:git@github.com:OndraZizka/kbake.git</developerConnection>
+        <tag>kbake-base-5.0.0-rc1</tag>
     </scm>
 
-    <issueManagement><system>GitHub Issues</system><url>https://github.com/OndraZizka/jbake/issues</url></issueManagement>
-    <ciManagement><system>GitHub Actions</system><url>https://github.com/OndraZizka/jbake/actions/</url></ciManagement>
+    <issueManagement><system>GitHub Issues</system><url>https://github.com/OndraZizka/kbake/issues</url></issueManagement>
+    <ciManagement><system>GitHub Actions</system><url>https://github.com/OndraZizka/kbake/actions/</url></ciManagement>
     <licenses><license><name>The MIT License (MIT)</name><url>http://opensource.org/licenses/MIT</url></license></licenses>
 
     <developers>
@@ -50,11 +50,11 @@
     </mailingLists>
 
     <modules>
-        <module>jbake-core</module>
-        <module>jbake-texy-service</module>
-        <module>jbake-dist</module>
-        <module>jbake-maven-plugin</module>
-        <module>jbake-e2e-tests</module>
+        <module>kbake-core</module>
+        <module>kbake-texy-service</module>
+        <module>kbake-dist</module>
+        <module>kbake-maven-plugin</module>
+        <module>kbake-e2e-tests</module>
     </modules>
 
     <properties>
@@ -68,7 +68,7 @@
         <extraJvmArgs.stores.orientdb>-Dorientdb.installCustomFormatter=false -Djna.nosys=true -XX:MaxDirectMemorySize=2g</extraJvmArgs.stores.orientdb>
 
         <!-- Build metadata properties for resource filtering -->
-        <jbakeVersion>${project.version}</jbakeVersion>
+        <kbakeVersion>${project.version}</kbakeVersion>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <gitHash>dev</gitHash>
@@ -245,7 +245,7 @@
                 <groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <jbake.buildOutputDir>${project.build.directory}</jbake.buildOutputDir>
+                        <kbake.buildOutputDir>${project.build.directory}</kbake.buildOutputDir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -254,7 +254,7 @@
                 <groupId>org.apache.maven.plugins</groupId><artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <jbake.buildOutputDir>${project.build.directory}</jbake.buildOutputDir>
+                        <kbake.buildOutputDir>${project.build.directory}</kbake.buildOutputDir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -405,7 +405,7 @@
                                 <!-- This would fail on JDKs other than 17, but we use toolchains plugin to force JDK 17 anyway.
                                 <requireJavaVersion>
                                     <version>[17,18)</version>
-                                    <message>JBake tests require JDK 17 (build artifacts rely on libraries incompatible with newer JDKs). Please run the build with JDK 17 (set JAVA_HOME or use toolchains).</message>
+                                    <message>KBake tests require JDK 17 (build artifacts rely on libraries incompatible with newer JDKs). Please run the build with JDK 17 (set JAVA_HOME or use toolchains).</message>
                                 </requireJavaVersion>
                              -->
                             </rules>

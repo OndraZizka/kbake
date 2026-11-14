@@ -1,10 +1,10 @@
-# Contributing to JBake
+# Contributing to KBake
 
-Thank you for your interest in contributing to JBake! This document provides guidelines and coding standards for the project.
+Thank you for your interest in contributing to KBake! This document provides guidelines and coding standards for the project.
 
 ## Project Overview
 
-JBake is both a **tool** and a **library**:
+KBake is both a **tool** and a **library**:
 - As a tool, it's used directly by end users to generate static sites
 - As a library, it's consumed by Java projects as a dependency
 
@@ -14,7 +14,7 @@ Therefore, all API classes must be **Java-friendly** and maintain backward compa
 
 ### Kotlin-Java Interoperability
 
-Since JBake is used as a library by Java projects, always keep Java interoperability in mind:
+Since KBake is used as a library by Java projects, always keep Java interoperability in mind:
 
 - Use `@JvmStatic` for static methods that should be accessible from Java
 - Use `@JvmField` for properties that should be exposed as public fields in Java
@@ -225,7 +225,7 @@ If you have questions about these guidelines or need clarification, please open 
 
 ---
 
-Thank you for contributing to JBake!
+Thank you for contributing to KBake!
 
 # Next steps
 

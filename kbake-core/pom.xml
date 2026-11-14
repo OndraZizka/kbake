@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ch.zizka.kbake</groupId>
+        <artifactId>kbake-base</artifactId>
+        <version>5.0.0-rc1</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>kbake-core</artifactId>
+    <packaging>jar</packaging>
+    <name>kbake-core</name>
+    <description>The core library of KBake</description>
+
+    <licenses><license><name>The MIT License (MIT)</name><url>http://opensource.org/licenses/MIT</url></license></licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Kepp the lines sorted. -->
+    <dependencies>
+        <!-- API Dependencies -->
+        <dependency><groupId>commons-io</groupId><artifactId>commons-io</artifactId></dependency>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-configuration2</artifactId></dependency>
+        <dependency><groupId>org.slf4j</groupId><artifactId>jul-to-slf4j</artifactId><version>${version.slf4j}</version></dependency>
+        <!-- Templating engines -->
+        <dependency><groupId>org.asciidoctor</groupId><artifactId>asciidoctorj</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy-templates</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.apache.groovy</groupId><artifactId>groovy-dateutil</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.freemarker</groupId><artifactId>freemarker</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>no.api.freemarker</groupId><artifactId>freemarker-java8</artifactId><version>3.0.3</version><optional>true</optional></dependency>
+        <dependency><groupId>org.thymeleaf</groupId><artifactId>thymeleaf</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>de.neuland-bfi</groupId><artifactId>jade4j</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>de.neuland-bfi</groupId><artifactId>pug4j</artifactId><optional>true</optional></dependency>
+            <!--<dependency><groupId>com.github.ben-manes.caffeine</groupId><artifactId>caffeine</artifactId></dependency>-->
+        <dependency><groupId>com.vladsch.flexmark</groupId><artifactId>flexmark</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>com.vladsch.flexmark</groupId><artifactId>flexmark-profile-pegdown</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>io.pebbletemplates</groupId><artifactId>pebble</artifactId><optional>true</optional></dependency>
+
+
+        <!-- Implementation Dependencies -->
+        <dependency><groupId>ch.qos.logback</groupId><artifactId>logback-classic</artifactId><version>${version.logback}</version></dependency>
+        <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId></dependency>
+        <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-jdk8</artifactId></dependency>
+        <dependency><groupId>com.fasterxml.jackson.datatype</groupId><artifactId>jackson-datatype-jsr310</artifactId></dependency>
+        <dependency><groupId>com.googlecode.json-simple</groupId><artifactId>json-simple</artifactId><exclusions><exclusion><groupId>junit</groupId><artifactId>junit</artifactId></exclusion></exclusions></dependency>
+        <dependency><groupId>com.orientechnologies</groupId><artifactId>orientdb-core</artifactId></dependency>
+        <dependency><groupId>commons-beanutils</groupId><artifactId>commons-beanutils</artifactId></dependency>
+        <dependency><groupId>info.picocli</groupId><artifactId>picocli</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId></dependency>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-vfs2</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.eclipse.jetty</groupId><artifactId>jetty-server</artifactId><optional>true</optional></dependency>
+        <dependency><groupId>org.hsqldb</groupId><artifactId>hsqldb</artifactId></dependency>
+        <dependency><groupId>org.jetbrains.kotlin</groupId><artifactId>kotlin-stdlib-jdk8</artifactId></dependency>
+        <dependency><groupId>org.jsoup</groupId><artifactId>jsoup</artifactId></dependency>
+        <dependency><groupId>org.neo4j</groupId><artifactId>neo4j</artifactId><!--<scope>provided</scope>-->
+            <exclusions>
+                <!-- TODO: Reduce Neo4j dependencies more, or make whole Neo4j entirely optional. -->
+                <exclusion><groupId>org.neo4j</groupId><artifactId>neo4j-slf4j-provider</artifactId></exclusion>
+            </exclusions>
+        </dependency>
+        <dependency><groupId>org.yaml</groupId><artifactId>snakeyaml</artifactId><optional>true</optional></dependency>
+
+        <!-- Test Dependencies -->
+        <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-assertions-core-jvm</artifactId><version>${version.kotest}</version></dependency>
+        <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-property-jvm</artifactId><version>${version.kotest}</version></dependency>
+        <dependency><scope>test</scope><groupId>io.kotest</groupId><artifactId>kotest-runner-junit5-jvm</artifactId><version>${version.kotest}</version></dependency>
+        <dependency><scope>test</scope><groupId>io.mockk</groupId><artifactId>mockk-jvm</artifactId><version>${version.mockk}</version></dependency>
+        <dependency><scope>test</scope><groupId>junit</groupId><artifactId>junit</artifactId></dependency>
+        <dependency><scope>test</scope><groupId>org.itsallcode</groupId><artifactId>junit5-system-extensions</artifactId></dependency>
+        <dependency><scope>test</scope><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-api</artifactId></dependency>
+        <dependency><scope>test</scope><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-engine</artifactId></dependency>
+    </dependencies>
+
+    <build>
+        <!-- This only affects Java compiler?
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+        -->
+        <resources>
+            <!-- Text resources that need property filtering -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes><exclude>**/*.zip</exclude></excludes>
+                <!--<includes><include>*.properties</include></includes>-->
+            </resource>
+            <!-- Binary resources that should NOT be filtered. TODO: Why should we bring this with the program? -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes><include>**/*.zip</include></includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution><phase>generate-sources</phase><goals><goal>add-source</goal></goals><configuration><sources><source>src/main/kotlin</source></sources></configuration></execution>
+                    <execution><id>add-test-source</id><phase>generate-test-sources</phase><goals><goal>add-test-source</goal></goals><configuration><sources><source>src/test/kotlin</source></sources></configuration></execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId><artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+
+            <!-- Add kotlin-maven-plugin at module level so it compiles with module dependencies on classpath -->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId><artifactId>kotlin-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>kotlin-compile</id><phase>compile</phase><goals><goal>compile</goal></goals>
+                        <configuration>
+                            <jvmTarget>17</jvmTarget>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <!--<sourceDir>${project.basedir}/src/main/kotlin</sourceDir>-->
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>kotlin-test-compile</id><phase>test-compile</phase><goals><goal>test-compile</goal></goals>
+                        <configuration>
+                            <jvmTarget>17</jvmTarget>
+                            <sourceDirs>
+                                <testSourceDir>${project.basedir}/src/test/kotlin</testSourceDir>
+                                <!--<testSourceDir>${project.basedir}/src/test/kotlin</testSourceDir>-->
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmTarget>${version.java}</jvmTarget>
+                </configuration>
+            </plugin>
+
+            <!-- Dokka plugin for Kotlin documentation (KDoc) -->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId><artifactId>dokka-maven-plugin</artifactId>
+                <executions>
+                    <!-- Generate Javadoc-compatible JAR from Kotlin KDoc -->
+                    <execution><id>dokka-javadoc-jar</id><phase>package</phase><goals><goal>javadocJar</goal></goals></execution>
+                </executions>
+                <configuration>
+                    <sourceDirectories>
+                        <dir>${project.basedir}/src/main/kotlin</dir>
+                    </sourceDirectories>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

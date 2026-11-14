@@ -2,9 +2,9 @@ version: 1
 update_configs:
 
   - package_manager: "java:maven"
-    directory: "/jbake-core"
+    directory: "/kbake-core"
     update_schedule: "monthly"
 
   - package_manager: "java:maven"
-    directory: "/jbake-dist"
+    directory: "/kbake-dist"
     update_schedule: "monthly"

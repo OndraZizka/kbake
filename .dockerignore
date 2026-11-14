@@ -1,3 +1,4 @@
 /build
-/jbake-dist/build
+/kbake-dist/target
+**/target
 .gradle

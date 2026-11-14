@@ -34,5 +34,5 @@
 | `TAGS_POSTS_TAGGED_CUR`          | `DocumentList<DocumentModel>` | TagsExtractor.populateTagContext, TemplateModel.fromContext | TemplateModel | Posts filtered by tag |
 | `DATA_FILES`                     | `Map<String, Any>`            | FreemarkerTemplateEngine (DataFileUtil adapter), TemplateModel.fromContext | FreemarkerTemplateEngine | Exposes data dir records |
 | `GLOB_PUBLISHING_DATE_FORMATTED` | `String`                      | FreemarkerTemplateEngine | FreemarkerTemplateEngine/templates | Formatted publish date |
-| `GLOB_JBAKE_VERSION`             | `String`                      | Renderer.render, DefaultRenderingConfig.model, TemplateModel.fromContext | TemplateModel | JBake version string |
+| `GLOB_JBAKE_VERSION`             | `String`                      | Renderer.render, DefaultRenderingConfig.model, TemplateModel.fromContext | TemplateModel | KBake version string |
 

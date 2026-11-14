@@ -1,10 +1,10 @@
 # Texy Markup Engine Support
 
-JBake now supports [Texy](https://texy.info/), a markup language from the Czech Republic that converts plain text to XHTML/HTML5.
+KBake now supports [Texy](https://texy.info/), a markup language from the Czech Republic that converts plain text to XHTML/HTML5.
 
 ## Overview
 
-The Texy engine allows JBake to process `.texy` files by communicating with a Texy service via HTTP. This approach keeps JBake lightweight while allowing support for various markup formats through external services.
+The Texy engine allows KBake to process `.texy` files by communicating with a Texy service via HTTP. This approach keeps KBake lightweight while allowing support for various markup formats through external services.
 
 ## Requirements
 
@@ -125,22 +125,22 @@ Output: Rendered HTML
 
 ## Docker Service Module
 
-A complete Maven module for the Texy service is provided in `jbake-texy-service/`:
+A complete Maven module for the Texy service is provided in `kbake-texy-service/`:
 - Full Maven build integration
 - Automated Docker image building
 - End-to-end tests with TestContainers
-- JBake integration tests
+- KBake integration tests
 - Docker Hub push capabilities
 
 ### Quick Start with Maven
 
 ```bash
 # Build the Docker image
-cd jbake-texy-service/
+cd kbake-texy-service/
 mvn package
 
 # Run the service
-docker run -d -p 8080:8080 --name texy jbake/texy-service:latest
+      docker run -d -p 8080:8080 --name texy kbake/texy-service:latest
 
 # Test the service
 curl -X POST http://localhost:8080/texy \
@@ -158,25 +158,25 @@ docker stop texy && docker rm texy
 
 ```bash
 # Build from source
-cd jbake-texy-service/
+cd kbake-texy-service/
 docker build -t texy-service .
 
 # Or pull from Docker Hub (once published)
-docker pull jbake/texy-service:latest
+docker pull kbake/texy-service:latest
 
 # Run the service
-docker run -d -p 8080:8080 --name texy jbake/texy-service:latest
+docker run -d -p 8080:8080 --name texy kbake/texy-service:latest
 ```
 
 The service will be available at `http://localhost:8080/texy`
 
 ## Architecture
 
-The implementation follows JBake's existing pattern for markup engines:
+The implementation follows KBake's existing pattern for markup engines:
 
 1. **Engine Registration**: The `TexyEngine` class is registered in `MarkupEngines.properties`
-2. **File Processing**: JBake routes `.texy` files to `TexyEngine`
-3. **Header Parsing**: Standard JBake header parsing (title, status, type, date, etc.)
+2. **File Processing**: KBake routes `.texy` files to `TexyEngine`
+3. **Header Parsing**: Standard KBake header parsing (title, status, type, date, etc.)
 4. **Body Rendering**: HTTP POST request to Texy service with markup content
 5. **Error Handling**: Graceful degradation if service is unavailable
 
@@ -185,10 +185,10 @@ The implementation follows JBake's existing pattern for markup engines:
 - ✅ HTTP-based service communication (Docker or standalone)
 - ✅ Configurable timeouts and service URL
 - ✅ Full Texy markup support via external service
-- ✅ Standard JBake header metadata parsing
+- ✅ Standard KBake header metadata parsing
 - ✅ Graceful error handling
 - ✅ Written in Kotlin
-- ✅ Follows existing JBake patterns
+- ✅ Follows existing KBake patterns
 - ✅ Comprehensive tests
 - ✅ Complete documentation
 
@@ -222,8 +222,8 @@ Ensure your Texy files are saved in UTF-8 encoding to avoid character issues.
 Since the Texy engine makes HTTP requests for each file, consider:
 
 1. **Service Performance**: Ensure your Texy service is optimized and can handle multiple requests.
-2. **Network Latency**: Run the Texy service locally or on the same network as JBake.
-3. **Caching**: JBake's built-in caching will help avoid re-processing unchanged files.
+2. **Network Latency**: Run the Texy service locally or on the same network as KBake.
+3. **Caching**: KBake's built-in caching will help avoid re-processing unchanged files.
 4. **Batch Processing**: For large sites, consider processing in batches or optimizing your service.
 
 ## Credits
@@ -235,4 +235,4 @@ Since the Texy engine makes HTTP requests for each file, consider:
 - Texy Official Site: https://texy.info/
 - Texy Documentation: https://texy.info/en/
 - Texy GitHub: https://github.com/dg/texy
-- JBake Website: https://jbake.org/
+- Upstream JBake website: https://jbake.org/

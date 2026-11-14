@@ -4,7 +4,7 @@ import com.orientechnologies.orient.core.db.OrientDBConfig
 import java.io.File
 
 /**
- * Sets up OrientDB test database for JBake tests.
+ * Sets up OrientDB test database for KBake tests.
  */
 object OrientDBTestSetup {
     @JvmStatic

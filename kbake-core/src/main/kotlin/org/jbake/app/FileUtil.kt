@@ -1,0 +1,203 @@
+package org.jbake.app
+
+import org.jbake.app.configuration.JBakeConfiguration
+import org.jbake.parser.ParserEnginesRegistry
+import java.io.*
+import java.io.File.separator
+import java.net.URLDecoder
+import java.nio.file.Paths
+import java.security.MessageDigest
+
+object FileUtil {
+
+    const val URI_SEPARATOR_CHAR: String = "/"
+
+    /** Filters files based on their file extension. */
+    fun getFileFilter(config: JBakeConfiguration): FileFilter {
+        return FileFilter { pathname ->
+            // Accept if input is a non-hidden file with registered extension, or if a non-hidden and not-ignored directory.
+            !pathname.isHidden() && (pathname.isFile()
+                && ParserEnginesRegistry.recognizedExtensions
+                .contains(fileExt(pathname))) || (directoryOnlyIfNotIgnored(pathname, config))
+        }
+    }
+
+    /** Filters files based on their file extension - only find data files (i.e. files with .yaml or .yml extension). */
+    val dataFileFilter: FileFilter
+        get() = FileFilter { pathname -> fileExt(pathname).lowercase().let { it == "yaml" || it == "yml" } }
+
+    /** Gets the list of files that are not content files based on their extension. */
+    fun getNotContentFileFilter(config: JBakeConfiguration): FileFilter {
+        return FileFilter { file: File ->
+            // Accept if input  is a non-hidden file with NOT-registered extension or if a non-hidden and not-ignored directory.
+            !file.isHidden()
+                // Extension should not be from registered content extensions
+                && (file.isFile() && !ParserEnginesRegistry.recognizedExtensions.contains(fileExt(file)))
+                || (directoryOnlyIfNotIgnored(file, config))
+        }
+    }
+
+    /**
+     * @return true if the directory contains a marker file to ignore the directory.
+     */
+    fun directoryOnlyIfNotIgnored(dir: File, config: JBakeConfiguration): Boolean {
+        return directoryOnlyIfNotIgnored(dir, config.ignoreDirMarkerFileName ?: ".jbakeignore")
+    }
+
+    fun directoryOnlyIfNotIgnored(dir: File, ignoreMarkerFileName: String): Boolean {
+        val ignoreFile = FilenameFilter { _, name -> name.equals(ignoreMarkerFileName, ignoreCase = true) }
+        return dir.isDirectory && dir.listFiles(ignoreFile).isEmpty()
+    }
+
+    fun isExistingDirectory(f: File) = f.exists() && f.isDirectory()
+
+
+    /**
+     * For tests, this points to test resources dir, which is in the classes dir, specified by sysprop `kbake.builtClassesDir`.
+     * For the runtime,
+     *
+     * @return File referencing directory KBake is running from
+     * @throws Exception when application is not able to work out where is KBake running from
+     */
+    @JvmStatic
+    @get:Throws(Exception::class)
+    val templateDirForTestsOrForRuntime: File
+        get() {
+            // Prefer explicit built classes directory (set by tests/build tools)
+            val builtClassesDir = System.getProperty("kbake.builtClassesDir")
+            if (builtClassesDir != null) {
+                val classes = File(builtClassesDir)
+                if (classes.exists()) return classes
+            }
+
+            // Check for build output dir next (points to target/ or build/), resolve to classes/
+            val buildOutputDir = System.getProperty("kbake.buildOutputDir")
+            if (buildOutputDir != null) {
+                val classesDir = File(buildOutputDir, "classes")
+                if (classesDir.exists()) return classesDir
+                // Fallback to the buildOutputDir itself if classes doesn't exist
+                val buildDir = File(buildOutputDir)
+                if (buildDir.exists()) return buildDir
+            }
+
+            // Production (outside of tests): Location of this class /../.. - which points to the `org` package? TODO review and do better.
+            val codePath = FileUtil::class.java.getProtectionDomain().codeSource.location.path
+            val decodedUrl = URLDecoder.decode(codePath, "UTF-8")
+            val codeFile = File(decodedUrl)
+            if (!codeFile.exists())
+                throw Exception("Cannot locate running location of KBake. (From URL of class FileUtils: $decodedUrl)")
+
+            val codeDir = codeFile.getParentFile().getParentFile()
+            if (!codeDir.exists())
+                throw Exception("Cannot locate running location of KBake!")
+
+            return codeDir
+        }
+
+    // TBD: Could be replaced with Kotlin extension function File.extension.
+    fun fileExt(src: File): String = fileExt(src.name)
+
+    fun fileExt(name: String): String = name.substringAfterLast(".", "")
+
+    /**
+     * Computes the hash of a file or directory.
+     *
+     * @return A hex string representing the SHA1 hash of the file or directory.
+     * @throws Exception if any IOException of SecurityException occured
+     */
+    @Throws(IOException::class)
+    fun sha1(sourceFile: File): String {
+        val digester = MessageDigest.getInstance("SHA-1")
+        updateDigest(digester, sourceFile, ByteArray(1024))
+        return digester.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    @Throws(IOException::class)
+    private fun updateDigest(digest: MessageDigest, sourceFile: File, buffer: ByteArray) {
+
+        if (sourceFile.isFile()) {
+            FileInputStream(sourceFile).use { fis ->
+                var numRead: Int
+                do {
+                    numRead = fis.read(buffer)
+                    if (numRead > 0)
+                        digest.update(buffer, 0, numRead)
+                } while (numRead != -1)
+            }
+        }
+        else if (sourceFile.isDirectory()) {
+            val files = sourceFile.listFiles()?.sorted() ?: return
+            for (file in files) {
+                updateDigest(digest, file, buffer)
+            }
+        }
+    }
+
+    /**
+     * Platform-independent file.getPath(). Needed to transform Windows path separators into slashes.
+     *
+     * @return The result of file.getPath() with all path Separators beeing a "/", or `null`
+     */
+    fun asPath(file: File): String =
+        if (separator == URI_SEPARATOR_CHAR) file.path
+        // On Windows we have to replace the backslash.
+        else file.path.replace(separator, URI_SEPARATOR_CHAR)
+
+    /**
+     * Given a file inside content it return the relative path to get to the root.
+     * Example: /content and /content/tags/blog will return '../..'
+     *
+     * @param sourceFile the file to calculate relative path for
+     * @return the relative path to get to the root
+     */
+    fun getPathToRoot(config: JBakeConfiguration, rootDir: File, sourceFile: File): String {
+        val root = try { Paths.get(rootDir.toURI()) }
+            catch (e: Exception) { throw RenderingException("Failed getting path for URI: ${rootDir.toURI().toURL().toString()} from file ${rootDir.path}", e) }
+        val source = Paths.get(sourceFile.parentFile.toURI())
+        val relativePath = source.relativize(root)
+
+        return buildString {
+            append(asPath(relativePath.toFile()))
+            if (config.uriWithoutExtension) append("/..")
+            if (isNotEmpty()) append("/") // The calling logic assumes / at end.
+        }
+    }
+
+    fun getUriPathToDestinationRoot(config: JBakeConfiguration, sourceFile: File)
+        = getPathToRoot(config, config.destinationDir, sourceFile)
+
+    @JvmStatic
+    fun getUriPathToContentRoot(config: JBakeConfiguration, sourceFile: File)
+        = getPathToRoot(config, config.contentDir, sourceFile)
+
+    @JvmStatic
+    fun getUriPathToSourceRoot(config: JBakeConfiguration, sourceFile: File): String {
+        val contentRoot = Paths.get(config.contentDir.toURI())
+        val sourceParent = Paths.get(sourceFile.parentFile.toURI())
+
+        val relative = try {
+            contentRoot.relativize(sourceParent)
+        } catch (e: Exception) {
+            return ""
+        }
+
+        val relString = asPath(relative.toFile())
+        val segments = if (relString.isEmpty()) 0 else relString.split(URI_SEPARATOR_CHAR).filter { it.isNotEmpty() }.size
+
+        return buildString {
+            repeat(segments + 1) { append("../") }
+        }
+    }
+
+    /**
+     * Utility method to determine if a given file is located somewhere in the directory provided.
+     *
+     * @return true if the file is somewhere in the provided directory, false if it is not.
+     * @throws IOException if the canonical path for either of the input directories can't be determined.
+     */
+    @JvmStatic
+    @Throws(IOException::class)
+    fun isFileInDirectory(file: File, directory: File): Boolean =
+        file.exists() && !file.isHidden && directory.isDirectory() && file.getCanonicalPath().startsWith(directory.getCanonicalPath())
+
+}

@@ -1,5 +1,5 @@
 <!--
-  Maven Build Cache configuration for JBake.
+  Maven Build Cache configuration for KBake.
   https://maven.apache.org/extensions/maven-build-cache-extension/
 
   Enable with: <enabled>true</enabled>

@@ -1,4 +1,4 @@
-= Contributing to JBake
+= Contributing to KBake
 // settings:
 :idprefix:
 :idseparator: -
@@ -6,7 +6,7 @@
 :language: {source-language}
 ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 // URIs:
-:uri-repo: https://github.com/OndraZizka/jbake
+:uri-repo: https://github.com/OndraZizka/kbake
 :uri-help-base: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests
 :uri-issues: {uri-repo}/issues
 :uri-fork-help: {uri-help-base}/working-with-forks/fork-a-repo
@@ -17,7 +17,7 @@ ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 :uri-license: LICENSE
 :uri-build: BUILD.adoc
 
-Thank you for your interest in improving JBake! We appreciate you taking the time to contribute and to
+Thank you for your interest in improving KBake! We appreciate you taking the time to contribute and to
 ensure that your contribution is easy to review and process, please follow the guidance outlined below.
 
 == License Agreement
@@ -33,8 +33,8 @@ submitting a bug report or feature request, check to make sure it hasn't already
 a bug report, please include a {uri-gist}[Gist] that includes any details that may help reproduce the bug,
 including your local environment details (i.e. installation method, JVM version, and Operating System).
 
-Most importantly, since JBake is a static site generator, reproducing most bugs requires that we have some snippet of
-content on which triggers the bad behaviour in JBake.
+Most importantly, since KBake is a static site generator, reproducing most bugs requires that we have some snippet of
+content on which triggers the bad behaviour in KBake.
 
 == Raising a Pull Request
 
@@ -62,13 +62,13 @@ Maven is the project's build system. See link:{uri-build}[BUILD.adoc] for build 
 uncomment when code style & prefs have been defined
 === Code Style and Formatting
 
-Please use the JBake code Eclipse formatting preferences[link] prior to starting work on any contribution. IntelliJ users
+Please use the KBake code Eclipse formatting preferences[link] prior to starting work on any contribution. IntelliJ users
 can import this into their IDE.
 ////
 
 === Writing and Executing Tests
 
-Tests and their resources reside within `/src/test` directory. JBake is written in Kotlin and uses modern Kotlin testing frameworks.
+Tests and their resources reside within `/src/test` directory. KBake is written in Kotlin and uses modern Kotlin testing frameworks.
 
 ==== Available Testing Libraries
 
@@ -103,7 +103,7 @@ Tests can be run directly in modern IDEs (IntelliJ IDEA, Eclipse, VS Code).
 
 === Supported Java Versions
 
-JBake requires **Java 17** for building and running. The project uses Maven toolchains to automatically select the correct
+KBake requires **Java 17** for building and running. The project uses Maven toolchains to automatically select the correct
 JDK version, so you need to have JDK 17 installed.
 
 Maven will automatically use JDK 17 if you have `~/.m2/toolchains.xml` configured (see link:{uri-build}[BUILD.adoc]).

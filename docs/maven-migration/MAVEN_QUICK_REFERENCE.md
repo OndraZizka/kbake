@@ -1,4 +1,4 @@
-# JBake Maven - Quick Reference Cheat Sheet
+# KBake Maven - Quick Reference Cheat Sheet
 
 ## Essential Commands
 
@@ -10,9 +10,9 @@ mvn clean verify           # Full build with tests
 mvn clean install          # Build and install to local repo
 
 # Build specific module
-mvn -pl :jbake-core compile
-mvn -pl :jbake-dist package
-mvn -pl :jbake-maven-plugin verify
+mvn -pl :kbake-core compile
+mvn -pl :kbake-dist package
+mvn -pl :kbake-maven-plugin verify
 
 # Skip tests
 mvn package -DskipTests
@@ -37,8 +37,8 @@ mvn test -Dtest=MainTest
 # Skip tests during package
 mvn package -DskipTests
 
-# Smoke tests only (jbake-dist)
-mvn -pl :jbake-dist verify
+# Smoke tests only (kbake-dist)
+mvn -pl :kbake-dist verify
 
 # With coverage report
 mvn verify jacoco:report
@@ -72,13 +72,13 @@ mvn -pl help:active-profiles
 mvn clean verify
 
 # Build specific module
-mvn -pl :jbake-core clean verify
+mvn -pl :kbake-core clean verify
 
 # Build module and dependencies
-mvn -pl jbake-core -am clean verify
+mvn -pl kbake-core -am clean verify
 
 # Build module and dependents
-mvn -pl jbake-core -amd clean verify
+mvn -pl kbake-core -amd clean verify
 ```
 
 ## Cleaning
@@ -90,11 +90,11 @@ mvn clean
 # Clean and build
 mvn clean compile
 
-# Remove local jbake artifacts
-rm -rf ~/.m2/repository/org/jbake/
+# Remove local KBake artifacts
+rm -rf ~/.m2/repository/ch/zizka/kbake/
 
 # Clean all (with cache clear)
-rm -rf ~/.m2/repository/org/jbake && mvn clean
+rm -rf ~/.m2/repository/ch/zizka/kbake && mvn clean
 ```
 
 ## Dependencies
@@ -104,7 +104,7 @@ rm -rf ~/.m2/repository/org/jbake && mvn clean
 mvn dependency:tree
 
 # Show for specific module
-mvn -pl :jbake-core dependency:tree
+mvn -pl :kbake-core dependency:tree
 
 # Check for conflicts
 mvn dependency:tree -Dverbose
@@ -120,14 +120,14 @@ mvn versions:display-dependency-updates
 
 ```bash
 # Build core library JAR
-mvn -pl :jbake-core package
+mvn -pl :kbake-core package
 
 # Build distribution
-mvn -pl :jbake-dist package
+mvn -pl :kbake-dist package
 # Outputs: ZIP, TAR, JAR
 
 # Build Maven plugin
-mvn -pl :jbake-maven-plugin package
+mvn -pl :kbake-maven-plugin package
 
 # Build everything
 mvn package
@@ -176,7 +176,7 @@ mvn jacoco:report           # Generate coverage
 mvn jacoco:prepare-agent    # For custom test runs
 
 # Help
-mvn help:describe -Dplugin=org.jbake:jbake-maven-plugin
+mvn help:describe -Dplugin=ch.zizka.kbake:kbake-maven-plugin
 ```
 
 ## Common Issues & Fixes
@@ -189,7 +189,7 @@ export MAVEN_OPTS="-Xmx3g"
 mvn clean compile  # Ensures Kotlin compiles first
 
 # Plugin not found
-mvn help:describe -Dplugin=:jbake-maven-plugin
+mvn help:describe -Dplugin=:kbake-maven-plugin
 
 # Slow builds
 mvn -T 1C clean verify  # Parallel threads
@@ -198,7 +198,7 @@ mvn -T 1C clean verify  # Parallel threads
 mvn dependency:tree -Dverbose
 
 # Clear everything and rebuild
-rm -rf ~/.m2/repository/org/jbake && mvn clean verify
+rm -rf ~/.m2/repository/ch/zizka/kbake && mvn clean verify
 ```
 
 ## Environment Variables
@@ -220,11 +220,11 @@ mvn -q clean verify
 ## Project Structure
 
 ```
-jbake/
+kbake/
 ├── pom.xml                    ← Start here (parent)
-├── jbake-core/pom.xml
-├── jbake-dist/pom.xml
-├── jbake-maven-plugin/pom.xml
+├── kbake-core/pom.xml
+├── kbake-dist/pom.xml
+├── kbake-maven-plugin/pom.xml
 ├── MAVEN_MIGRATION_COMPLETE.md  ← Full guide
 ├── KOTLIN_COMPILATION.md         ← Kotlin setup
 └── Documentation files
@@ -277,11 +277,11 @@ jbake/
 | File | Purpose |
 |------|---------|
 | `pom.xml` | Parent POM, dependency mgmt |
-| `jbake-core/pom.xml` | Core library |
-| `jbake-dist/pom.xml` | CLI distribution |
-| `jbake-maven-plugin/pom.xml` | Maven plugin |
+| `kbake-core/pom.xml` | Core library |
+| `kbake-dist/pom.xml` | CLI distribution |
+| `kbake-maven-plugin/pom.xml` | Maven plugin |
 | `config/checkstyle/checkstyle.xml` | Code style rules |
-| `jbake-dist/src/assembly/distribution.xml` | Distribution config |
+| `kbake-dist/src/assembly/distribution.xml` | Distribution config |
 
 ## Help & Resources
 
@@ -292,8 +292,8 @@ mvn help:describe -Dplugin=org.apache.maven.plugins:maven-compiler-plugin
 # List available goals for plugin
 mvn help:describe -Dplugin=:maven-compiler-plugin -Ddetail
 
-# JBake plugin help
-mvn help:describe -Dplugin=org.jbake:jbake-maven-plugin
+# KBake plugin help
+mvn help:describe -Dplugin=ch.zizka.kbake:kbake-maven-plugin
 
 # Full POM
 mvn help:effective-pom
@@ -312,7 +312,7 @@ mvn package -Dskip.javadoc=true
 mvn package -DskipTests -Dskip.jacoco=true -Dskip.checkstyle=true
 
 # Resume build from failure point
-mvn -rf :jbake-dist clean verify
+mvn -rf :kbake-dist clean verify
 
 # Show download progress
 mvn -B clean verify

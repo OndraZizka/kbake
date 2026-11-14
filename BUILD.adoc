@@ -18,23 +18,23 @@ mvn clean verify
 ----
 
 To install artifacts into the local Maven repository, use `mvn clean install`.
-The binary distribution ZIP is created at `jbake-dist/target/jbake-{version}-bin.zip` during `verify`.
+The binary distribution ZIP is created at `kbake-dist/target/kbake-{version}-bin.zip` during `verify`.
 
 == Modules
 
 The reactor contains these modules:
 
-* `jbake-core` — core library and CLI implementation.
-* `jbake-dist` — runnable distribution, Docker image configuration, and smoke tests.
-* `jbake-maven-plugin` — Maven plugin.
-* `jbake-texy-service` — Texy HTTP service and its integration tests.
-* `jbake-e2e-tests` — container-based end-to-end tests; not published.
+* `kbake-core` — core library and CLI implementation.
+* `kbake-dist` — runnable distribution, Docker image configuration, and smoke tests.
+* `kbake-maven-plugin` — Maven plugin.
+* `kbake-texy-service` — Texy HTTP service and its integration tests.
+* `kbake-e2e-tests` — container-based end-to-end tests; not published.
 
 Build one module and its prerequisites with:
 
 [source,shell]
 ----
-mvn -pl jbake-core -am verify
+mvn -pl kbake-core -am verify
 ----
 
 == Tests
@@ -42,12 +42,12 @@ mvn -pl jbake-core -am verify
 Run unit tests with `mvn test`; run the complete verification suite, including integration and smoke tests, with `mvn verify`.
 Test reports are under each module's `target/surefire-reports/` and `target/failsafe-reports/` directories.
 
-The `jbake-dist` verification tests bake the OZ.cz website when its source is available. The default source is
-`~/uw/ondra.zizka.cz-web`; set `JBAKE_WEBSITE_DIR` or `-Djbake.website.dir=/path/to/site` to choose another checkout.
+The `kbake-dist` verification tests bake the OZ.cz website when its source is available. The default source is
+`~/uw/ondra.zizka.cz-web`; set `KBAKE_WEBSITE_DIR` or `-Dkbake.website.dir=/path/to/site` to choose another checkout.
 Without a site checkout, a small checked-in fixture is used. To retain a full-site preview under
-`jbake-dist/target/website-preview`, add `-Djbake.website.keepOutput=true`.
+`kbake-dist/target/website-preview`, add `-Dkbake.website.keepOutput=true`.
 
-The five `example_project_*.zip` files in `jbake-core/src/main/resources` are bundled templates for `jbake --init`.
+The five `example_project_*.zip` files in `kbake-core/src/main/resources` are bundled templates for `kbake --init`.
 They make Maven builds self-contained and let the CLI initialize sites offline.
 
 == Code coverage and style
@@ -63,12 +63,12 @@ The report is written under `target/site/jacoco/`. Check style with `mvn checkst
 
 == Docker
 
-Build the application image from the repository root with `docker build -t jbake/jbake:latest .`.
-The Texy service image can be built from `jbake-texy-service/` with `docker build -t jbake/texy-service:latest .`.
+Build the application image from the repository root with `docker build -t kbake/kbake:latest .`.
+The Texy service image can be built from `kbake-texy-service/` with `docker build -t kbake/texy-service:latest .`.
 
 == Release
 
-Artifacts are configured for Maven Central under the `ch.zizka.jbake` groupId. See
+Artifacts are configured for Maven Central under the `ch.zizka.kbake` groupId. See
 `docs/releasing/RELEASING.md` for credentials and signing requirements. The release command is:
 
 [source,shell]

@@ -1,26 +1,29 @@
 FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
-LABEL maintainer="https://jbake.org/community/team.html"
+LABEL maintainer="https://github.com/OndraZizka/kbake"
 
-ENV JBAKE_HOME=/opt/jbake
-ARG JBAKE_VERSION=5.0.0-rc1
+ENV KBAKE_HOME=/opt/kbake
+ARG KBAKE_VERSION=5.0.0-rc1
 
-WORKDIR /usr/src/jbake
+WORKDIR /usr/src/kbake
 COPY . .
 
-RUN mkdir -p /root/.m2 \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /root/.m2 \
     && printf '<toolchains><toolchain><type>jdk</type><provides><version>17</version></provides><configuration><jdkHome>%s</jdkHome></configuration></toolchain></toolchains>\n' "$JAVA_HOME" > /root/.m2/toolchains.xml \
-    && mvn -B -DskipTests -pl jbake-dist -am verify \
-    && mkdir -p "$JBAKE_HOME" /tmp/jbake-dist \
-    && unzip -q "jbake-dist/target/jbake-${JBAKE_VERSION}-bin.zip" -d /tmp/jbake-dist \
-    && cp -a "/tmp/jbake-dist/jbake-${JBAKE_VERSION}/." "$JBAKE_HOME/" \
-    && rm -rf /tmp/jbake-dist /usr/src/jbake
+    && mvn -B -DskipTests -pl kbake-dist -am verify \
+    && mkdir -p "$KBAKE_HOME" /tmp/kbake-dist \
+    && unzip -q "kbake-dist/target/kbake-${KBAKE_VERSION}-bin.zip" -d /tmp/kbake-dist \
+    && cp -a "/tmp/kbake-dist/kbake-${KBAKE_VERSION}/." "$KBAKE_HOME/" \
+    && rm -rf /tmp/kbake-dist /usr/src/kbake
 
 FROM eclipse-temurin:17-jre-alpine
 
-ENV JBAKE_USER=jbake
-ENV JBAKE_HOME=/opt/jbake
-ENV PATH ${JBAKE_HOME}/bin:$PATH
+ENV KBAKE_USER=kbake
+ENV KBAKE_HOME=/opt/kbake
+ENV PATH=${KBAKE_HOME}/bin:$PATH
 ENV TZ=UTC
 
 RUN apk --no-cache update && \
@@ -30,17 +33,17 @@ RUN apk --no-cache update && \
 
 RUN echo ${TZ} > /etc/timezone
 
-RUN adduser -D -u 1000 -g "" ${JBAKE_USER} ${JBAKE_USER}
+RUN adduser -D -u 1000 -g "" ${KBAKE_USER} ${KBAKE_USER}
 
-USER ${JBAKE_USER}
+USER ${KBAKE_USER}
 
-COPY --from=builder /opt/jbake /opt/jbake
+COPY --from=builder /opt/kbake /opt/kbake
 
 WORKDIR /mnt/site
 
 VOLUME ["/mnt/site"]
 
-ENTRYPOINT ["jbake"]
+ENTRYPOINT ["kbake"]
 CMD ["-b"]
 
 EXPOSE 8820

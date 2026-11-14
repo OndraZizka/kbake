@@ -1,8 +1,8 @@
-# Releasing JBake to Maven Central
+# Releasing KBake to Maven Central
 
-This document describes how to release JBake artifacts to Maven Central under the `ch.zizka.jbake` groupId.
+This document describes how to release KBake artifacts to Maven Central under the `ch.zizka.kbake` groupId.
 
-It's under this groupId for this branch. If/when merged, it may be changed to `org.jbake`.
+Published artifacts use the `ch.zizka.kbake` namespace.
 
 
 ## Quick Start
@@ -23,7 +23,7 @@ Or use the deployment script:
 
 ### 1. Java 17
 
-JBake requires Java 17 for building:
+KBake requires Java 17 for building:
 
 ```bash
 export JAVA_HOME=$HOME/.jdks/temurin-17.0.17
@@ -35,7 +35,7 @@ java -version  # Verify it's Java 17
 
 - Portal: https://central.sonatype.com/
 - Login with your OSSRH JIRA credentials
-- Ensure you may publish to `ch.zizka`
+- Ensure you may publish to `ch.zizka.kbake`
 
 ### 3. Maven Settings (~/.m2/settings.xml)
 
@@ -155,19 +155,19 @@ mvn release:perform -Prelease  ## Builds and uploads.
    https://central.sonatype.com/publishing
 
 2. **Maven Central Repository** (15-30 min):
-   https://repo1.maven.org/maven2/ch/zizka/jbake/
+   https://repo1.maven.org/maven2/ch/zizka/kbake/
 
 3. **Maven Search** (few hours):
-   https://search.maven.org/search?q=g:ch.zizka.jbake
+   https://search.maven.org/search?q=g:ch.zizka.kbake
 
 ## Modules Published
 
-- `ch.zizka.jbake:jbake-base` - Parent POM
-- `ch.zizka.jbake:jbake-core` - Core library (with Kotlin KDoc documentation)
-- `ch.zizka.jbake:jbake-dist` - Distribution JAR
-- `ch.zizka.jbake:jbake-maven-plugin` - Maven plugin
+- `ch.zizka.kbake:kbake-base` - Parent POM
+- `ch.zizka.kbake:kbake-core` - Core library (with Kotlin KDoc documentation)
+- `ch.zizka.kbake:kbake-dist` - Distribution JAR
+- `ch.zizka.kbake:kbake-maven-plugin` - Maven plugin
 
-Note: `jbake-e2e-tests` is not deployed (has `maven.deploy.skip=true`)
+Note: `kbake-e2e-tests` is not deployed (has `maven.deploy.skip=true`)
 
 ## Project Configuration
 

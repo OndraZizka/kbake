@@ -1,5 +1,5 @@
 
-This document provides guidelines for contributing to **JBake**, an open-source static site generator written in Kotlin.
+This document provides guidelines for contributing to **KBake**, an open-source static site generator written in Kotlin.
 
 **Project Context:**
 - Primary language: Kotlin (with Java interoperability)
@@ -8,7 +8,7 @@ This document provides guidelines for contributing to **JBake**, an open-source 
 - Users: Site generators who rely on stable APIs
 
 **Core Principles:**
-- Maintain backwards compatibility for existing JBake users
+- Maintain backwards compatibility for existing KBake users
 - Write concise, idiomatic Kotlin code
 - Minimize unnecessary code - question whether new code is needed
 - Run unit tests frequently; run full test suite (including IT and E2E) before finalizing changes
@@ -16,7 +16,7 @@ This document provides guidelines for contributing to **JBake**, an open-source 
 
 ## Environment Setup
 
-- JBake test suite requires JDK 17. Use Eclipse Temurin JDK 17 to run the tests.
+- KBake test suite requires JDK 17. Use Eclipse Temurin JDK 17 to run the tests.
   ~~`export JAVA_HOME=$HOME/.jdks/temurin-17.0.17 && export PATH=$JAVA_HOME/bin:$PATH && mvn ...`~~
     - Update: Not needed anymore, Maven is now set up with `<toolchain>` so it works with just `mvn ...`.
 
@@ -57,7 +57,7 @@ This document provides guidelines for contributing to **JBake**, an open-source 
           ```
 - Don't leave empty lines before closing braces.
 - Try not to duplicate code. If you find yourself copying and pasting code, consider refactoring it into a shared function, class, or module.
-- Keep Java interop in mind. JBake is also used as a library. New public APIs should be easily usable from Java.
+- Keep Java interop in mind. KBake is also used as a library. New public APIs should be easily usable from Java.
 - When you add code intended for debugging or investigation, mark it somehow, e.g. with `... // DEBUG` comment or `// +++ DEBUG block start` and `// +++ DEBUG block end`, so it can be easily found and removed later.
 - Add dots at the end of comment sentences, and capitalize them.
 

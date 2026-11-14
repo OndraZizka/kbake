@@ -1,0 +1,129 @@
+package org.jbake.launcher
+
+import org.jbake.app.configuration.ConfigUtil
+import picocli.CommandLine
+import java.io.File
+
+@CommandLine.Command(
+    description = ["KBake is a Java based, open source, static site/blog generator for developers & designers"],
+    name = "kbake",
+    usageHelpAutoWidth = true
+)
+class LaunchOptions {
+
+    @CommandLine.Option(
+        names = ["-l", "--log-level"],
+        description = ["set log level: OFF, ERROR, WARN, INFO, DEBUG, TRACE (default: WARN)"],
+        paramLabel = "<level>"
+    )
+    var logLevel: String? = null
+
+    @CommandLine.Option(
+        names = ["-v"],
+        description = ["verbose output (-v=WARN, -vv=INFO, -vvv=DEBUG)"]
+    )
+    var verbose: BooleanArray = booleanArrayOf()
+
+    @CommandLine.Option(
+        names = ["-d", "--debug"],
+        description = ["show diagnostic details and stack traces when an error occurs"]
+    )
+    var debug: Boolean = false
+
+    /**
+     * Returns the effective log level based on -l or -v options.
+     * -v = WARN, -vv = INFO, -vvv = DEBUG
+     * -l takes precedence if both are specified.
+     */
+    val effectiveLogLevel: String?
+        get() {
+            // Explicit log level takes precedence
+            if (logLevel != null) return logLevel
+
+            // Count -v occurrences
+            return when (verbose.size) {
+                0 -> null  // Use default
+                1 -> "WARN"
+                2 -> "INFO"
+                else -> "DEBUG"  // 3 or more
+            }
+        }
+
+    @CommandLine.Parameters(index = "0", arity = "0..1",
+        description = ["source dir of site content (with templates and assets), if not supplied will default to current directory"],
+    )
+    var sourceValue: String? = null
+
+    @CommandLine.Parameters(index = "1", arity = "0..1",
+        description = ["destination dir for output, if not supplied will default to a dir called \"output\" in the current directory"],
+    )
+    var destinationValue: String? = null
+
+    @CommandLine.Option(names = ["-b", "--bake"], description = ["performs a bake"])
+    var isBake: Boolean = false
+        get() = field || (this.sourceValue != null && this.destinationValue != null)
+
+    @CommandLine.Option(
+        names = ["-i", "--init"],
+        description = ["initialises the site structure with default templates"]
+    )
+    var isInit: Boolean = false
+
+    @CommandLine.Option(
+        names = ["-t", "--template"],
+        paramLabel = "<template>",
+        defaultValue = "freemarker",
+        fallbackValue = "freemarker",
+        description = ["template engine for initialization (default: freemarker)"],
+        arity = "0..1"
+    )
+    var template: String = "freemarker"
+
+    @CommandLine.Option(
+        names = ["-s", "--server"],
+        description = ["runs HTTP server to serve out baked site, if no <value> is supplied will default to a dir called \"output\" in the current directory"]
+    )
+    var isRunServer: Boolean = false
+
+    @CommandLine.Option(names = ["-h", "--help"], description = ["prints this message"], usageHelp = true)
+    private var helpRequested = false
+
+    @CommandLine.Option(names = ["--reset"], description = ["clears the local cache, enforcing rendering from scratch"])
+    var isClearCache: Boolean = false
+
+    @CommandLine.Option(
+        names = ["-c", "--config"],
+        description = ["use specified file for configuration (defaults to " + ConfigUtil.CONFIG_FILE + " in the source dir if not supplied)"]
+    )
+    var configValue: String? = null
+
+    @JvmField
+    @CommandLine.Option(
+        names = ["--prop-encoding"],
+        description = ["use given encoding to load properties file. default: utf-8"]
+    )
+    var propertiesEncoding: String = "utf-8"
+
+    @CommandLine.Option(names = ["-ls", "--list-settings"], description = ["list configuration settings"])
+    var isListConfig: Boolean = false
+
+    fun getSource(): File {
+        return sourceValue?.let { File(it) }
+            ?: File(System.getProperty("user.dir"))
+    }
+
+    // TODO: Possibly null if neither destinationValue is set nor sourceValue is set?
+    fun getDestination(): File {
+        return destinationValue?.let { File(it) }
+            ?: File(getSource(), "output")
+    }
+
+    fun getConfig(): File {
+        return configValue?.let { File(it) }
+            ?: File(getSource(), "jbake.properties")
+    }
+
+    val isHelpNeeded: Boolean
+        get() = helpRequested || !(this.isListConfig || this.isBake || this.isRunServer || this.isInit || this.sourceValue != null || this.destinationValue != null)
+
+}
