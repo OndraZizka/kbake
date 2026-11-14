@@ -1,6 +1,6 @@
 // orientdb-test-setup.main.kts
 // This Kotlin script creates a test OrientDB database with admin/admin credentials for JBake tests.
-// Usage: Execute via Gradle task or directly with proper classpath
+// Usage: Execute directly with the required OrientDB classpath
 
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("com.orientechnologies:orientdb-core:3.2.47")

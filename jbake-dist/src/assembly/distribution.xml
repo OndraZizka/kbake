@@ -34,7 +34,7 @@
             </includes>
         </fileSet>
 
-        <!-- Include lib/logging directory with logback.xml (matches Gradle's src/dist behavior) -->
+        <!-- Include the logging configuration used by the distribution. -->
         <fileSet>
             <directory>${project.basedir}/src/dist/lib/logging</directory>
             <outputDirectory>/lib/logging</outputDirectory>

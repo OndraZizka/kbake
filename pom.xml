@@ -73,7 +73,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <gitHash>dev</gitHash>
 
-        <!-- Runtime dependencies versions (synced from gradle.properties) -->
+        <!-- Runtime dependency versions -->
         <version.args4j>2.37</version.args4j>
         <version.asciidoctorj.diagram>3.1.0</version.asciidoctorj.diagram>
         <version.asciidoctorj>3.0.1</version.asciidoctorj>

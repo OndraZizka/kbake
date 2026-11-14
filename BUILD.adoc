@@ -1,394 +1,81 @@
 // suppress inspection "AsciiDocAttributeShouldBeDefined" for whole file
-= Test, Build and Deploy
+= Build, Test, and Deploy
 :toc:
-:gradle-home: http://gradle.org[Gradle]
-:gradle-userguide: https://docs.gradle.org/current/userguide/userguide.html[gradle userguide]
-:gradle-wrapper: https://docs.gradle.org/current/userguide/gradle_wrapper.html[gradle wrapper]
 :maven-home: https://maven.apache.org/[Maven]
-:maven-guide: https://maven.apache.org/guides/[maven guide]
-:jacoco-web: http://www.eclemma.org/jacoco/[jacoco]
-:sdkman: http://sdkman.io[sdkman]
-:kotlin: https://kotlinlang.org/[Kotlin]
+:maven-guide: https://maven.apache.org/guides/[Maven guide]
+:jacoco-web: https://www.jacoco.org/jacoco/[JaCoCo]
+:sdkman: https://sdkman.io[SDKMAN!]
 
-...and other useful stuff you can do with the build systems.
-
-The project supports both {gradle-home} and {maven-home} as build systems.
-
-* **Maven** - The release build, with the canonical 5.0.0-rc1 version and full verification lifecycle
-* **Gradle** - An alternative build system, using Gradle 9
-* **Kotlin** - The codebase includes {kotlin} code with proper documentation generation
-
-This document covers common tasks for developing, building and deploying JBake.
-
-== Build Systems
-
-=== Using Gradle
-
-To execute Gradle tasks use the {gradle-wrapper}. This ensures you're using the exact Gradle version (9.x) configured for the project.
-
-Commands from the root of the project:
-
-* `./gradlew <task>` (on Unix-like platforms such as Linux and Mac OS X)
-* `gradlew <task>` (on Windows using the gradlew.bat batch file)
-
-To get an overview of all available tasks: `./gradlew tasks`
-
-=== Using Maven
-
-Maven support is fully configured. Maven will automatically use JDK 17 via toolchains.
-
-Commands from the root of the project:
-
-* `mvn <goal>` - Maven will auto-detect JDK 17 from toolchains
-
-For detailed Maven instructions see link:docs/releasing/RELEASING.md[RELEASING.md]
-
-== Structure
-
-There are 5 modules (both Gradle and Maven):
-
-root aka. jbake-base::
-    - Parent project configuring submodules
-    - Gradle: jacoco execution aggregation
-    - Maven: dependency management, plugin management, release configuration
-
-jbake-core::
-    - The core library with Java and Kotlin code
-    - Produces `jbake-core-{version}.jar`
-    - Gradle: `build/libs`
-    - Maven: `target/`
-    - Documentation generated with Dokka for Kotlin code
-
-jbake-dist::
-    - Bundles the CLI distribution
-    - Creates binary packages and Docker images
-    - Gradle: `build/distributions`
-    - Maven: `target/`
-
-jbake-maven-plugin::
-    - The JBake Maven plugin
-    - Built by both Gradle and Maven
-
-jbake-e2e-tests::
-    - End-to-end integration tests
-    - Tests Docker container functionality
-    - Not published to Maven Central
-
-=== Running tasks in specific modules
-
-**Gradle:**
-----
-./gradlew :jbake-core:test
-----
-
-**Maven:**
-----
-mvn test -pl jbake-core
-----
-
-
-== Test
-
-=== Run the tests
-
-While developing this is the most common task you should execute.
-
-**Gradle:**
-----
-./gradlew test
-----
-
-**Maven:**
-----
-mvn test
-----
-
-This compiles and executes all tests within `src/test` and produces a report afterwards.
-
-**Gradle reports:** `jbake-core/build/reports/tests/test/index.html`
-
-**Maven reports:** `jbake-core/target/surefire-reports/`
-
-You can view these reports with your browser to see full stacktraces and output when tests fail.
-
-=== know what's going on
-
-The task is not very verbose. An successful execution looks like the following listing.
-
-.successful test execution
-----
-./gradlew test
-
-BUILD SUCCESSFUL in 53s
-6 actionable tasks: 6 executed
-----
-
-You can set different log levels with the command option `-i` for info or `-d` for debug. (e.g.: `./gradlew -i test`)
-
-=== enable continuous testing
-
-To execute the tests as soon as some input file changes run the task with
- `-t` option.
-
-----
-./gradlew -t test
-Continuous build is an incubating feature.
-
-BUILD SUCCESSFUL in 0s
-6 actionable tasks: 1 executed, 5 up-to-date
-
-Waiting for changes to input files of tasks... (ctrl-d to exit)
-<-------------> 0% WAITING
-> IDLE
-----
-
-=== smoke tests
-
-The `jbake-dist` module has a task called `smokeTest`.
-It executes the produced application, initializes a jbake project for each supported example project and bake it.
-
-The Maven `verify` phase runs the built-in project checks and bakes the OZ.cz website when its source is available.
-By default the test looks for `~/uw/ondra.zizka.cz-web`; set `JBAKE_WEBSITE_DIR` or `-Djbake.website.dir=/path/to/site` to select another checkout.
-Without that checkout it uses a small checked-in fixture. For a local full-site preview that remains under `jbake-dist/target/website-preview`, add `-Djbake.website.keepOutput=true`.
-
-The five `example_project_*.zip` files in `jbake-core/src/main/resources` are bundled templates for `jbake --init`; keeping them there makes Maven builds self-contained and lets the CLI initialize sites offline.
-
-The `check` task depends on the `smokeTest` task and is part of the travis CI execution.
-You can find the report at `jbake-dist/build/reports/tests/smokeTest/`
-
-=== Code coverage
-
-Generate code coverage reports with {jacoco-web}.
-
-**Gradle (aggregated):**
-----
-./gradlew jacocoRootReport
-----
-Report: `build/reports/jacoco/jacocoRootReport/html`
-
-**Gradle (per module):**
-----
-./gradlew :jbake-core:jacocoTestReport
-----
-Report: `<module>/build/reports/jacoco/test/html/`
-
-**Maven (per module):**
-----
-mvn test
-----
-Reports are generated automatically in `<module>/target/jacoco/`
-
-plugin:: https://docs.gradle.org/current/userguide/jacoco_plugin.html
+Maven is the project's build and release system. Build with JDK 17 and Maven 3.9.9 or newer.
 
 == Build
 
-=== Run the build
+Run the complete build and verification suite from the repository root:
 
-The `build` task assembles and tests the project.
-
-**Gradle:**
-----
-./gradlew build
-----
-
-**Maven:**
+[source,shell]
 ----
 mvn clean verify
 ----
 
-This compiles code, runs tests, generates javadocs, creates distribution packages, and runs checks.
+To install artifacts into the local Maven repository, use `mvn clean install`.
+The binary distribution ZIP is created at `jbake-dist/target/jbake-{version}-bin.zip` during `verify`.
 
-**Gradle output:** `jbake-dist/build/distributions/jbake-{version}-bin.zip`
+== Modules
 
-**Maven output:** `jbake-dist/target/jbake-{version}-bin.zip` (created in the `verify` phase after the executable JAR is shaded)
+The reactor contains these modules:
 
-=== Install local
+* `jbake-core` — core library and CLI implementation.
+* `jbake-dist` — runnable distribution, Docker image configuration, and smoke tests.
+* `jbake-maven-plugin` — Maven plugin.
+* `jbake-texy-service` — Texy HTTP service and its integration tests.
+* `jbake-e2e-tests` — container-based end-to-end tests; not published.
 
-**Gradle:**
+Build one module and its prerequisites with:
+
+[source,shell]
 ----
-./gradlew installDist
+mvn -pl jbake-core -am verify
 ----
-Output: `jbake-dist/build/install/jbake`
 
-**Maven:**
+== Tests
+
+Run unit tests with `mvn test`; run the complete verification suite, including integration and smoke tests, with `mvn verify`.
+Test reports are under each module's `target/surefire-reports/` and `target/failsafe-reports/` directories.
+
+The `jbake-dist` verification tests bake the OZ.cz website when its source is available. The default source is
+`~/uw/ondra.zizka.cz-web`; set `JBAKE_WEBSITE_DIR` or `-Djbake.website.dir=/path/to/site` to choose another checkout.
+Without a site checkout, a small checked-in fixture is used. To retain a full-site preview under
+`jbake-dist/target/website-preview`, add `-Djbake.website.keepOutput=true`.
+
+The five `example_project_*.zip` files in `jbake-core/src/main/resources` are bundled templates for `jbake --init`.
+They make Maven builds self-contained and let the CLI initialize sites offline.
+
+== Code coverage and style
+
+Generate a coverage report with:
+
+[source,shell]
 ----
-mvn clean install
+mvn verify jacoco:report
 ----
-Installs to local Maven repository: `~/.m2/repository/ch/zizka/jbake/`
 
-NOTE: These tasks do not run all checks. They just compile and bundle the distribution.
+The report is written under `target/site/jacoco/`. Check style with `mvn checkstyle:check`.
 
-plugin:: https://docs.gradle.org/current/userguide/application_plugin.html
+== Docker
 
-== Deploy
+Build the application image from the repository root with `docker build -t jbake/jbake:latest .`.
+The Texy service image can be built from `jbake-texy-service/` with `docker build -t jbake/texy-service:latest .`.
 
-WARNING: Never add credentials to the repository
+== Release
 
-=== Releasing to Maven Central
+Artifacts are configured for Maven Central under the `ch.zizka.jbake` groupId. See
+`docs/releasing/RELEASING.md` for credentials and signing requirements. The release command is:
 
-The project is published to Maven Central under the `ch.zizka.jbake` groupId.
-
-For complete release instructions including GPG key setup, credentials configuration, and troubleshooting, see:
-
-**link:docs/releasing/RELEASING.md[RELEASING.md]**
-
-**Quick release command (Maven):**
+[source,shell]
 ----
 mvn clean deploy -Prelease
 ----
 
-This will:
+For SDKMAN publication, activate the `sdkman` Maven profile and configure credentials in `~/.m2/settings.xml`.
 
-* Build all modules
-* Generate sources and javadoc JARs (using Dokka for Kotlin code)
-* Sign all artifacts with GPG
-* Upload to Maven Central Portal
-* Automatically publish to Maven Central (appears in 15-30 minutes)
-
-**Prerequisites:**
-
-* GPG key uploaded to keyservers
-* Maven Central Portal credentials in `~/.m2/settings.xml`
-* Java 17 (automatically selected via Maven toolchains)
-
-=== GitHub release
-
-Bump desired project version in `gradle.properties`:
-
-----
-version = 100.0.0
-----
-
-Commit and push to GitHub, then:
-
-----
-./gradlew signArchives
-./gradlew githubRelease
-----
-
-This creates a tag, creates a GitHub release, and uploads the binary distribution with signature.
-
-[NOTE]
-====
-Add to your local `~/.gradle/gradle.properties`:
-
-----
-github.token=<access token>
-github.release.owner=jbake-org
-github.release.repo=jbake
-----
-
-For dry-run: `export GITHUB_RELEASE_DRY_RUN=true`
-====
-
-plugin:: https://github.com/BreadMoirai/github-release-gradle-plugin
-
-=== Publish with Gradle (alternative)
-
-You can also publish to Maven Central using Gradle:
-
-----
-./gradlew publishToSonatype
-----
-
-For more information:
-
-* https://github.com/gradle-nexus/publish-plugin
-* https://central.sonatype.org/
-
-Add to `~/.gradle/gradle.properties`:
-
-    sonatypeUsername=username
-    sonatypePassword=secret
-
-plugin:: https://plugins.gradle.org/plugin/io.github.gradle-nexus.publish-plugin
-
-=== Publish to SDKMAN
-
-To release, set to default and announce a new candidate of JBake to {sdkman} run
-
-    ./gradlew sdkMajorRelease
-
-Add the following properties to your local _gradle.properties_ file (_~/.gradle/gradle.properties_):
-
-    sdkman_consumer_key=key
-    sdkman_consumer_token=token
-
-plugin:: https://plugins.gradle.org/plugin/io.sdkman.vendors
-
-==== Publish to SDKMAN with Maven
-
-To publish to SDKMAN using Maven, activate the `sdkman` profile:
-
-    mvn clean deploy -Psdkman
-
-Add the following properties to your local _~/.m2/settings.xml_:
-
-[source,xml]
-----
-<settings>
-  <profiles>
-    <profile>
-      <id>sdkman</id>
-      <properties>
-        <sdkman.consumer.key>your-consumer-key</sdkman.consumer.key>
-        <sdkman.consumer.token>your-consumer-token</sdkman.consumer.token>
-      </properties>
-    </profile>
-  </profiles>
-</settings>
-----
-
-Or pass them on the command line:
-
-    mvn clean deploy -Psdkman -Dsdkman.consumer.key=your-key -Dsdkman.consumer.token=your-token
-
-This will automatically announce the new JBake version to SDKMAN during the Maven deploy phase.
-
-plugin:: https://github.com/sdkman/sdkman-maven-plugin
-
-=== Signing
-
-To enable code signing you need to add some more properties to your local _gradle.properties_ file (_~/.gradle/gradle.properties_):
-
-    signing.keyId=24875D73
-    signing.password=secret
-    signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
-
-To skip signing on purpose add `-PskipSigning=true`.
-
-plugin:: https://docs.gradle.org/current/userguide/signing_plugin.html
-
-== Other useful tasks
-
-=== Check code convention violations
-
-The Checkstyle Plugin is configured to use our code conventions defined in `config/checkstyle/checkstyle.xml`.
-
-It gets executed with the `check` Task and prints warnings about violations to the console.
-A report can be found at jbake-core/build/reports/checkstyle/.
-
-plugin:: https://docs.gradle.org/current/userguide/checkstyle_plugin.html
-
-=== Keep the dependencies up-to-date
-
-**Gradle:**
-----
-./gradlew dependencyUpdates
-----
-
-Generates a report showing available dependency updates at `build/dependencyUpdates/report.txt`
-
-**Maven:**
-----
-mvn versions:display-dependency-updates
-mvn versions:display-plugin-updates
-----
-
-The Maven versions plugin is configured to exclude pre-release versions (alpha, beta, RC, milestone, etc.) via `maven-version-rules.xml`.
-
-Both Gradle and Maven dependency versions are synchronized between `gradle.properties` and `pom.xml`.
-
-Gradle plugin:: https://plugins.gradle.org/plugin/com.github.ben-manes.versions
-
-Maven plugin:: https://www.mojohaus.org/versions/versions-maven-plugin/
+Never commit release credentials or signing keys.

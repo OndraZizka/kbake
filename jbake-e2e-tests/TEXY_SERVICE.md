@@ -11,9 +11,6 @@ End-to-end tests that require the Texy markup service should use the Docker imag
 Before running tests that require the Texy service, build the Docker image:
 
 ```bash
-# Using Gradle
-./gradlew :jbake-texy-service:dockerBuild
-
 # Using Maven
 cd jbake-texy-service
 mvn package
@@ -53,4 +50,3 @@ Previously, the `jbake-e2e-tests` module contained duplicate copies of the Texy 
 - **Source**: `jbake-texy-service` module
 
 See the `jbake-texy-service/README.md` for more details about the service implementation.
-

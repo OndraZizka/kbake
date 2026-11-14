@@ -5,7 +5,7 @@ Ondrej Zizka, Jonathan Bullock
 
 http://jbake.org[JBake] is a Java based open source static site/blog generator for developers.
 
-NOTE: This is a fork maintained by Ondrej Zizka with modernizations including Kotlin 2.2, Gradle 9, JDK 17+, and Maven build support.
+NOTE: This is a fork maintained by Ondrej Zizka with modernizations including Kotlin 2.2 and JDK 17+.
 
 image:https://img.shields.io/github/v/release/OndraZizka/jbake?label=download&sort=semver["GitHub Release Download", link="https://github.com/OndraZizka/jbake/releases/latest"]
 image:https://img.shields.io/maven-central/v/ch.zizka.jbake/jbake-core.svg["Maven Central", link="https://central.sonatype.com/artifact/ch.zizka.jbake/jbake-core"]
@@ -24,7 +24,7 @@ Original documentation is available on http://jbake.org/docs/[jbake.org].
 
 Additional documentation for this fork:
 
-* link:BUILD.adoc[Build Guide] - Information on building with Gradle or Maven
+* link:BUILD.adoc[Build Guide] - Maven build, test, and release instructions
 * link:docs/releasing/RELEASING.md[Release Guide] - Instructions for publishing to Maven Central
 * link:CONTRIBUTING.asciidoc[Contributing Guide]
 
@@ -65,7 +65,7 @@ Talk to other users of JBake on the forum:
 
 == Docker Image
 
-The image uses https://hub.docker.com/_/gradle[gradle:9.2.1-jdk17] for building a distribution of JBake and
+The image uses Maven with JDK 17 to build JBake and
 https://hub.docker.com/_/eclipse-temurin[eclipse-temurin:17-jre-alpine] for runtime.
 
 === Build
@@ -76,24 +76,8 @@ To build the Docker image:
 $ docker build -t jbake/jbake:latest .
 ----
 
-W
 
-
-== Build System
-
-This project supports both http://gradle.org[Gradle] 9+ and https://maven.apache.org[Maven] as build systems.
-
-=== Building with Gradle
-
-To build the JBake distribution ZIP file:
-
-----
-$ ./gradlew distZip
-----
-
-This will build a ZIP file in the `jbake-dist/build/distributions` folder.
-
-=== Building with Maven
+== Building
 
 To build the project with Maven:
 
@@ -110,8 +94,7 @@ For more information see link:BUILD.adoc[Build Guide]
 
 The project uses a basic set of http://checkstyle.sourceforge.net/[checkstyle] rules to keep the Code in shape.
 
-We configured the gradle checkstyle Plugin to run with the `check` task.
-It does not break the build if convention violations are found. But prints a warning and generates a report.
+Checkstyle is available through Maven and reports convention violations during the build.
 
 For more information see link:BUILD.adoc[Test, Build and Deploy]
 
@@ -164,11 +147,9 @@ Pick the project checkstyle file `config/checkstyle/checkstyle.xml`
 * https://github.com/vsch/flexmark-java[Flexmark] - Markdown parser and processor
 * https://commonmark.org/[CommonMark] - Markdown specification implementation
 
-=== Build Systems
+=== Build System
 
 * https://maven.apache.org/[Maven] - Primary build system for multi-module projects
-* http://gradle.org[Gradle 9] - Alternative build system with Kotlin DSL support
-* https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper] - Version-locked Gradle distribution
 
 === Testing
 

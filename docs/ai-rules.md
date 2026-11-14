@@ -3,7 +3,7 @@ This document provides guidelines for contributing to **JBake**, an open-source 
 
 **Project Context:**
 - Primary language: Kotlin (with Java interoperability)
-- Build systems: Maven and Gradle (both must be maintained)
+- Build system: Maven
 - Key technologies: Asciidoc, Freemarker, Thymeleaf, Markdown parsers
 - Users: Site generators who rely on stable APIs
 
@@ -22,10 +22,8 @@ This document provides guidelines for contributing to **JBake**, an open-source 
 
 ## Build System
 
-- When modifying build files, ensure compatibility with both Maven and Gradle builds. Update both `pom.xml` and `build.gradle` as needed.
-- When adding new dependencies, prefer using BOMs to manage versions consistently across Maven and Gradle.
+- When modifying build files or adding dependencies, update the relevant Maven POM files.
 - Maven: Put the <dependency> elements on a single line each.
-- Maven and Gradle: When adding plugins, ensure they are added to both `pom.xml` and `build.gradle` files.
 
 ## Code Style & Idioms
 
@@ -66,7 +64,7 @@ This document provides guidelines for contributing to **JBake**, an open-source 
 ## Testing
 
 - Write unit tests for new features and bug fixes. Use Kotest and Mockk for testing. Kotest allows parametrized tests with `forAll` and `row`. Use StringSpec rather than FunSpec. Do NOT use JUnit, especially not constructs like `assertTrue(foo.contains("bar"))`!
-- When you assume a task is done, run the full test suite with both Maven and Gradle. `mvn clean verify` and `./gradlew clean test`. Include E2E tests.
+- When you assume a task is done, run the full test suite with `mvn clean verify`. Include E2E tests where Docker is available.
   - The run may take around a minute.
 
 ## Development Workflow

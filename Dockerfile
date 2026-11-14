@@ -1,18 +1,20 @@
-FROM gradle:9.2.1-jdk17 AS builder
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 LABEL maintainer="https://jbake.org/community/team.html"
 
 ENV JBAKE_HOME=/opt/jbake
+ARG JBAKE_VERSION=5.0.0-rc1
 
-RUN mkdir -p ${JBAKE_HOME}
-COPY . /usr/src/jbake
+WORKDIR /usr/src/jbake
+COPY . .
 
-RUN set -o errexit -o nounset \
-    && echo "Building JBake" \
-    && cd /usr/src/jbake \
-    && gradle --no-daemon installDist \
-    && cp -r jbake-dist/build/install/jbake/* $JBAKE_HOME \
-    && rm -r ~/.gradle /usr/src/jbake
+RUN mkdir -p /root/.m2 \
+    && printf '<toolchains><toolchain><type>jdk</type><provides><version>17</version></provides><configuration><jdkHome>%s</jdkHome></configuration></toolchain></toolchains>\n' "$JAVA_HOME" > /root/.m2/toolchains.xml \
+    && mvn -B -DskipTests -pl jbake-dist -am verify \
+    && mkdir -p "$JBAKE_HOME" /tmp/jbake-dist \
+    && unzip -q "jbake-dist/target/jbake-${JBAKE_VERSION}-bin.zip" -d /tmp/jbake-dist \
+    && cp -a "/tmp/jbake-dist/jbake-${JBAKE_VERSION}/." "$JBAKE_HOME/" \
+    && rm -rf /tmp/jbake-dist /usr/src/jbake
 
 FROM eclipse-temurin:17-jre-alpine
 

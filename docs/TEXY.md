@@ -154,23 +154,6 @@ mvn test
 docker stop texy && docker rm texy
 ```
 
-### Quick Start with Gradle
-
-```bash
-# Build the Docker image
-cd jbake-texy-service/
-./gradlew assemble
-
-# Run the service
-docker run -d -p 8080:8080 --name texy jbake/texy-service:latest
-
-# Run tests (includes Docker image build and container tests)
-./gradlew test
-
-# Stop the service
-docker stop texy && docker rm texy
-```
-
 ### Building and Running with Docker Directly
 
 ```bash

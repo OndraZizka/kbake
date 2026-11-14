@@ -45,7 +45,6 @@ class BinaryRunner(private val workingDir: File) {
 
     companion object {
         private val isWindows = SystemUtils.IS_OS_WINDOWS
-        private val gradlePath = if (isWindows) "build\\install\\jbake\\bin\\jbake.bat" else "build/install/jbake/bin/jbake"
         private val mavenPath = if (isWindows) "target\\appassembler\\bin\\jbake.bat" else "target/appassembler/bin/jbake"
 
         val jbakeExecutableRelative: File
@@ -55,13 +54,9 @@ class BinaryRunner(private val workingDir: File) {
                         ?: throw IllegalStateException("Configured JBake launcher was not found: $configuredPath")
                 }
 
-                // Check Gradle path first (relative to jbake-dist working directory)
-                val gradleFile: File = File(gradlePath).let { if (it.exists()) return it else it }
-
-                // Fall back to Maven path
                 val mavenFile: File = File(mavenPath).let { if(it.exists()) return it else it }
 
-                "No jbake launcher found! CWD: ${File(".").path}  Gradle: ${gradleFile.path} Maven: ${mavenFile.path}"
+                "No Maven-built launcher found! CWD: ${File(".").path} Maven: ${mavenFile.path}"
                     .let { throw Exception(it) }
             }
 

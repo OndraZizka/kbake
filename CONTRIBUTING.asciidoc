@@ -49,16 +49,14 @@ Once you're ready to start work on your pull request:
 . Add tests for your feature or bug fix (see <<writing-and-executing-tests>>)
 . Implement your feature or bug fix
 . Run tests:
-  * Gradle: `./gradlew test`
   * Maven: `mvn test`
 . If tests fail, return to step 4
 . Add, commit, and push your changes
 . {uri-pr-help}[Submit a pull request]
 
-=== Build Systems
+=== Build
 
-JBake supports both Gradle and Maven. Changes to dependencies or build configuration should be synchronized between both
-systems. See link:{uri-build}[BUILD.adoc] for detailed build instructions.
+Maven is the project's build system. See link:{uri-build}[BUILD.adoc] for build and release instructions.
 
 ////
 uncomment when code style & prefs have been defined
@@ -84,11 +82,6 @@ For Kotlin tests, prefer Kotest as it provides idiomatic Kotlin testing support 
 Place any test resources (templates, sample content, etc.) in `/src/test/resources`.
 
 ==== Running Tests
-
-**Gradle:**
-----
-./gradlew test
-----
 
 **Maven:**
 ----
