@@ -126,7 +126,7 @@
         <version.dokka>2.1.0</version.dokka>
 
         <!-- E2E test dependencies versions -->
-        <version.docker.java>3.7.0</version.docker.java>
+        <version.docker.java>3.7.1</version.docker.java>
     </properties>
 
     <dependencyManagement>
