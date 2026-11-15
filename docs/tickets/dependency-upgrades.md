@@ -7,7 +7,7 @@ Review the updates reported by Maven Versions Plugin, upgrade them in small test
 ## Work items
 
 - [x] Tag the `5.0.0-rc1` base before changes.
-- [x] Set the reactor version to `5.0.0-rc2`.
+- [x] Set the reactor version to `5.0.0-rc2-SNAPSHOT` for ongoing development/release-plugin preparation.
 - [x] Upgrade Kotlin from `2.2.21` to `2.4.21` (shared Kotlin BOM and Maven plugin property).
 - [x] Upgrade the requested dependencies and run the reactor tests after each listed group.
 - [ ] Review and upgrade the remaining build plugins.
@@ -72,7 +72,7 @@ Other candidates from the report include Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 
 
 - [x] Run `mvn test` after each requested dependency group.
 - [x] Run final `mvn verify` after the HttpClient 5 and JUnit system extensions group.
-- [ ] Run Docker-backed E2E tests in an environment with Docker available.
+- [ ] Re-run the KBake Docker E2E tests when the local `kbake/kbake:5.0.0-rc2-SNAPSHOT` image is available. The attempt against the old `5.0.0-rc2` tag failed because that local image was missing; Testcontainers itself connected successfully.
 - For embedded databases, test both fresh stores and any supported existing-store upgrade path; back up persistent data before a production upgrade.
 
-The final `mvn verify` passed. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
+The final `mvn verify` passed and included the distribution Failsafe tests. The 12 Texy service tests passed when explicitly invoked after packaging and copying that module's test resources. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
