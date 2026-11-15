@@ -112,7 +112,7 @@
         <version.junit.pioneer>2.3.0</version.junit.pioneer>
         <version.mockk>1.14.12</version.mockk>
         <version.kotest>6.2.7</version.kotest>
-        <version.testcontainers>2.0.2</version.testcontainers>
+        <version.testcontainers>2.0.5</version.testcontainers>
 
         <!-- JNR versions for Java 17+ compatibility - used by OrientDB and Asciidoctor. -->
         <version.jnr.posix>3.1.21</version.jnr.posix>
