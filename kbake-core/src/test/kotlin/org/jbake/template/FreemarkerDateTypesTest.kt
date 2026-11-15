@@ -16,7 +16,7 @@ import java.util.*
 class FreemarkerDateTypesTest : StringSpec({
 
     "freemarker formats Date with string pattern" {
-        @Suppress("DEPRECATION") val date = Date(2025-1900, 12-1, 10, 14, 30, 0)
+        val date = Date.from(Instant.parse("2025-12-10T13:30:00Z"))
         val map = mutableMapOf<String, Any>("content" to mapOf("mydate" to date))
         val template = $$"${content.mydate?string('yyyy-MM-dd HH:mm:ssXXX')}"
 

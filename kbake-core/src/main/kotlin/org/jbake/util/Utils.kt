@@ -39,8 +39,8 @@ fun convertTemporalsInModelToJavaUtilDate(model: Map<String, Any>, timeZoneId: Z
 
 private fun doConvertDatesInModel(value: Any?, timeZoneId: ZoneId): Any?
     = when (value) {
-    is Map<*, *> -> value.mapValues { (_, v) -> doConvertDatesInModel(v, ZoneId.systemDefault()) } // Also handles DocumentModel etc.
-    is Collection<*> -> value.map { doConvertDatesInModel(it, ZoneId.systemDefault()) }
+    is Map<*, *> -> value.mapValues { (_, v) -> doConvertDatesInModel(v, timeZoneId) } // Also handles DocumentModel etc.
+    is Collection<*> -> value.map { doConvertDatesInModel(it, timeZoneId) }
     else -> convertScalar(value, timeZoneId)
 }
 
