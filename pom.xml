@@ -96,7 +96,7 @@
         <version.json.simple>1.1.1</version.json.simple>
         <version.jsoup>1.21.2</version.jsoup>
         <version.logback>1.6.7</version.logback>
-        <version.neo4j>5.26.0</version.neo4j>
+        <version.neo4j>2026.10.2</version.neo4j>
         <version.orientdb>3.2.58</version.orientdb>
         <version.pebble>4.0.0</version.pebble>
         <version.picocli>4.7.7</version.picocli>
