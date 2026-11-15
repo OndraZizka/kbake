@@ -122,7 +122,7 @@
         <version.maven>3.9.11</version.maven>
         <version.maven.annotations>3.15.2</version.maven.annotations>
         <version.spark>2.9.4</version.spark>
-        <version.kotlin>2.2.21</version.kotlin>
+        <version.kotlin>2.4.21</version.kotlin>
         <version.dokka>2.1.0</version.dokka>
 
         <!-- E2E test dependencies versions -->
