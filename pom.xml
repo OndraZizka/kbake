@@ -4,7 +4,7 @@
 
     <groupId>ch.zizka.kbake</groupId>
     <artifactId>kbake-base</artifactId>
-    <version>5.0.0-rc2-SNAPSHOT</version>
+    <version>5.0.0-rc2</version>
     <packaging>pom</packaging>
 
     <name>KBake parent</name>
@@ -19,7 +19,7 @@
         <url>https://github.com/OndraZizka/kbake</url>
         <connection>scm:git:git@github.com:OndraZizka/kbake.git</connection>
         <developerConnection>scm:git:git@github.com:OndraZizka/kbake.git</developerConnection>
-        <tag>kbake-base-5.0.0-rc1</tag>
+        <tag>kbake-base-5.0.0-rc2</tag>
     </scm>
 
     <issueManagement><system>GitHub Issues</system><url>https://github.com/OndraZizka/kbake/issues</url></issueManagement>
