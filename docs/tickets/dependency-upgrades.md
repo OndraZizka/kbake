@@ -3,21 +3,23 @@
 ## Summary
 
 Review the dependency and build-plugin updates reported by Maven Versions Plugin, upgrade them in small, testable batches, and address compatibility changes where required.
+#2 Review the updates reported by Maven Versions Plugin, upgrade them in small testable batches, and address compatibility changes where required. Candidate versions were reported by `mvn versions:display-dependency-updates` and `mvn versions:display-plugin-updates` across the reactor on 2026-11-15. These reports can include managed artifacts that are not used by a module; newer versions are candidates, not guaranteed drop-in replacements.
 
 Version candidates below came from `mvn versions:display-dependency-updates` and `mvn versions:display-plugin-updates` across the Maven reactor (report run 2026-11-15). The plugin reports newer versions, not guaranteed drop-in replacements; its dependency-management results can include artifacts that are not used by a module.
 
+
 ## Work items
 
-- [x] Upgrade Kotlin from `2.2.21` to `2.4.21` in the parent property shared by the Kotlin BOM and Kotlin Maven plugin.
-- [ ] Upgrade remaining dependencies after review and compatibility testing.
-- [ ] Upgrade Maven build plugins after review and build verification.
+- [x] Tag the `5.0.0-rc1` base before changes.
+- [x] Set the reactor version to `5.0.0-rc2-SNAPSHOT` for ongoing development/release-plugin preparation.
+- [x] Upgrade Kotlin from `2.2.21` to `2.4.21` (shared Kotlin BOM and Maven plugin property).
+- [x] Upgrade the requested dependencies and run the reactor tests after each listed group.
+- [ ] Review and upgrade the remaining build plugins.
 
 ## Dependency candidates
 
-### Runtime and application dependencies
-
-| Dependency | Current | Reported update | Notes |
-|---|---:|---:|---|
+| Group | Dependency | Current | Reported update | Migration notes |
+|---|---|---:|---:|---|
 | Logback | 1.5.21 | 1.6.7 | |
 | Jackson family (BOM / managed artifacts) | 2.20 / 2.20.1 | 2.23 / 2.23.0 | Align the separately pinned Jackson annotations dependency with the BOM. |
 | Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
@@ -42,6 +44,29 @@ Version candidates below came from `mvn versions:display-dependency-updates` and
 | SLF4J | 2.0.17 | 2.0.20 | Keep bridges and bindings aligned. |
 | Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
 | SnakeYAML | 2.5 | 2.7 | |
+| Logging/Jackson | Logback | 1.5.21 | 1.6.7 | |
+| Logging/Jackson | Jackson BOM/core/databind | 2.20/2.20.1 | 2.23/2.23.0 | Align the separately pinned annotations version. |
+| Logging/Jackson | SLF4J | 2.0.17 | 2.0.20 | Align bridges and test bindings. |
+| Databases/libraries | Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
+| Databases/libraries | Gson | 2.13.2 | 2.15.0 | |
+| Databases/libraries | OrientDB | 3.2.47 | 3.2.58 | Exercise database operations and persisted-store compatibility. |
+| Databases/libraries | Neo4j | 5.26.0 | 2026.10.2 | Major version-stream change. Its Java 21-only service annotation processor required disabling processor discovery in `kbake-maven-plugin` (no JSR-269 processors are used there) to retain Java 17 compilation. |
+| Templates | Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
+| Templates | FreeMarker | 2.3.34 | 2.3.35 | Exercise template rendering. |
+| Other runtime | Commons IO | 2.21.0 | 2.22.0 | |
+| Other runtime | Commons Configuration | 2.13.0 | 2.15.1 | |
+| Other runtime | Commons Lang | 3.20.0 | 3.22.0 | |
+| Other runtime | jsoup | 1.21.2 | 1.24.1 | |
+| Other runtime | SnakeYAML | 2.5 | 2.7 | |
+| Other runtime | JGit | 7.4.0.202509020913-r | 7.8.1.202611041320-r | Exercise Git-backed content handling. |
+| Other runtime | AsciidoctorJ Diagram | 3.1.0 | 3.2.1 | Exercise diagram rendering. |
+| Testing | Kotest | 6.0.7 | 6.2.7 | |
+| Testing | MockK | 1.14.7 | 1.14.12 | |
+| Testing | JUnit | 6.0.1 | 6.1.3 | Keep BOM and JUnit modules aligned. |
+| Testing | Testcontainers | 2.0.2 | 2.0.5 | Run Docker-backed E2E and Texy tests. |
+| Testing | Docker Java | 3.7.0 | 3.7.1 | Used by E2E tests. |
+| Testing | JUnit system extensions | 1.2.2 | 1.2.3 | |
+| Testing | HttpClient 5 | 5.5.1 | 5.6.5 | Used by Texy service tests. |
 
 ### Test dependencies and project APIs
 
@@ -55,6 +80,7 @@ Version candidates below came from `mvn versions:display-dependency-updates` and
 | Maven core / plugin API | 3.9.11 | 3.10.0 | Rebuild and run Maven-plugin integration tests. |
 | Maven plugin annotations | 3.15.2 | 3.16.0 | |
 | HttpClient 5 | 5.5.1 | 5.6.5 | Used by Texy service tests. |
+Other candidates from the report include Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 → 4.1.3`, Groovy `5.0.3 → 6.0.0`, Jetty `11.0.26 → 12.1.15`, JFFI `1.3.14 → 1.4.7`, JNR POSIX `3.1.21 → 3.2.8`, and Maven core/API `3.9.11 → 3.10.0`. Review these separately because they may require compatibility work. JCommander `1.85 → 3.0` was also reported in dependency management; verify actual use before upgrading.
 
 ## Build plugin candidates
 
@@ -82,13 +108,11 @@ Version candidates below came from `mvn versions:display-dependency-updates` and
 | Dokka | 2.1.0 | 2.3.0 |
 | Central Publishing | 0.9.0 | 0.12.0 |
 
-## Migration and verification plan
+## Verification
 
-1. Apply patch/minor updates in small batches, keeping BOM-managed families aligned.
-2. Handle the Kotlin, Groovy, Pug4j, Jetty, Neo4j, and Maven API upgrades separately and inspect compile/test failures before making source changes.
-3. Run `mvn verify`; include Docker-backed E2E and Texy integration tests, template-engine fixture tests, and Maven plugin integration tests.
-4. For embedded databases, test both fresh stores and any supported existing-store upgrade path; back up persistent data before a production upgrade.
+- [x] Run `mvn test` after each requested dependency group.
+- [x] Run final `mvn verify` after the HttpClient 5 and JUnit system extensions group.
+- [ ] Re-run the KBake Docker E2E tests when the local `kbake/kbake:5.0.0-rc2-SNAPSHOT` image is available. Testcontainers connected successfully, but the earlier run tried the non-snapshot `5.0.0-rc2` image, which was missing; the snapshot image is not present in this worktree's Docker daemon yet.
+- For embedded databases, test both fresh stores and any supported existing-store upgrade path; back up persistent data before a production upgrade.
 
-## Scope note
-
-Only Kotlin is upgraded in the change that creates this ticket. The other versions above remain candidates for subsequent work, and should be rechecked with the Versions Plugin when each batch is scheduled.
+The final `mvn verify` passed and included the distribution Failsafe tests; a subsequent `mvn test` also passed with the `5.0.0-rc2-SNAPSHOT` reactor version. The 12 Texy service tests passed when explicitly invoked after packaging and copying that module's test resources. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
