@@ -94,7 +94,7 @@
         <version.jetty.server>11.0.26</version.jetty.server>
         <version.jgit>7.4.0.202509020913-r</version.jgit>
         <version.json.simple>1.1.1</version.json.simple>
-        <version.jsoup>1.21.2</version.jsoup>
+        <version.jsoup>1.24.1</version.jsoup>
         <version.logback>1.6.7</version.logback>
         <version.neo4j>2026.10.2</version.neo4j>
         <version.orientdb>3.2.58</version.orientdb>
