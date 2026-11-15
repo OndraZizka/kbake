@@ -3,10 +3,8 @@
 ## Summary
 
 Review the dependency and build-plugin updates reported by Maven Versions Plugin, upgrade them in small, testable batches, and address compatibility changes where required.
-#2 Review the updates reported by Maven Versions Plugin, upgrade them in small testable batches, and address compatibility changes where required. Candidate versions were reported by `mvn versions:display-dependency-updates` and `mvn versions:display-plugin-updates` across the reactor on 2026-11-15. These reports can include managed artifacts that are not used by a module; newer versions are candidates, not guaranteed drop-in replacements.
 
 Version candidates below came from `mvn versions:display-dependency-updates` and `mvn versions:display-plugin-updates` across the Maven reactor (report run 2026-11-15). The plugin reports newer versions, not guaranteed drop-in replacements; its dependency-management results can include artifacts that are not used by a module.
-
 
 ## Work items
 
@@ -18,69 +16,55 @@ Version candidates below came from `mvn versions:display-dependency-updates` and
 
 ## Dependency candidates
 
-| Group | Dependency | Current | Reported update | Migration notes |
-|---|---|---:|---:|---|
-| Logback | 1.5.21 | 1.6.7 | |
-| Jackson family (BOM / managed artifacts) | 2.20 / 2.20.1 | 2.23 / 2.23.0 | Align the separately pinned Jackson annotations dependency with the BOM. |
-| Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
-| Docker Java family | 3.7.0 | 3.7.1 | Used by E2E tests. |
-| JFFI | 1.3.14 | 1.4.7 | Used for Java 17+ compatibility. |
-| JNR POSIX | 3.1.21 | 3.2.8 | Used for Java 17+ compatibility. |
-| Gson | 2.13.2 | 2.15.0 | |
-| OrientDB | 3.2.47 | 3.2.58 | Exercise database operations and persisted-store compatibility. |
-| Commons IO | 2.21.0 | 2.22.0 | |
-| Commons Configuration | 2.13.0 | 2.15.1 | |
-| Commons Lang | 3.20.0 | 3.22.0 | |
-| Pug4j | 2.4.1 | 3.1.1 | Major update; review the Pug template adapter and render fixtures. |
-| Pebble | 4.0.0 | 4.1.3 | Exercise template rendering. |
-| Groovy family | 5.0.3 | 6.0.0 | Major update; test Groovy and markup template rendering. |
-| AsciidoctorJ Diagram | 3.1.0 | 3.2.1 | Exercise diagram rendering. |
-| Jetty server | 11.0.26 | 12.1.15 | Major update; review embedded server/handler APIs and run server tests. |
-| JGit | 7.4.0.202509020913-r | 7.8.1.202611041320-r | Exercise Git-backed content handling. |
-| FreeMarker | 2.3.34 | 2.3.35 | Exercise template rendering. |
-| JCommander | 1.85 | 3.0 | Appears in dependency management; verify it is actually used before upgrading. |
-| jsoup | 1.21.2 | 1.24.1 | |
-| Neo4j | 5.26.0 | 2026.10.2 | Major version stream change; validate APIs and existing database upgrade behavior. |
-| SLF4J | 2.0.17 | 2.0.20 | Keep bridges and bindings aligned. |
-| Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
-| SnakeYAML | 2.5 | 2.7 | |
-| Logging/Jackson | Logback | 1.5.21 | 1.6.7 | |
-| Logging/Jackson | Jackson BOM/core/databind | 2.20/2.20.1 | 2.23/2.23.0 | Align the separately pinned annotations version. |
-| Logging/Jackson | SLF4J | 2.0.17 | 2.0.20 | Align bridges and test bindings. |
-| Databases/libraries | Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
-| Databases/libraries | Gson | 2.13.2 | 2.15.0 | |
-| Databases/libraries | OrientDB | 3.2.47 | 3.2.58 | Exercise database operations and persisted-store compatibility. |
-| Databases/libraries | Neo4j | 5.26.0 | 2026.10.2 | Major version-stream change. Its Java 21-only service annotation processor required disabling processor discovery in `kbake-maven-plugin` (no JSR-269 processors are used there) to retain Java 17 compilation. |
-| Templates | Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
-| Templates | FreeMarker | 2.3.34 | 2.3.35 | Exercise template rendering. |
-| Other runtime | Commons IO | 2.21.0 | 2.22.0 | |
-| Other runtime | Commons Configuration | 2.13.0 | 2.15.1 | |
-| Other runtime | Commons Lang | 3.20.0 | 3.22.0 | |
-| Other runtime | jsoup | 1.21.2 | 1.24.1 | |
-| Other runtime | SnakeYAML | 2.5 | 2.7 | |
-| Other runtime | JGit | 7.4.0.202509020913-r | 7.8.1.202611041320-r | Exercise Git-backed content handling. |
-| Other runtime | AsciidoctorJ Diagram | 3.1.0 | 3.2.1 | Exercise diagram rendering. |
-| Testing | Kotest | 6.0.7 | 6.2.7 | |
-| Testing | MockK | 1.14.7 | 1.14.12 | |
-| Testing | JUnit | 6.0.1 | 6.1.3 | Keep BOM and JUnit modules aligned. |
-| Testing | Testcontainers | 2.0.2 | 2.0.5 | Run Docker-backed E2E and Texy tests. |
-| Testing | Docker Java | 3.7.0 | 3.7.1 | Used by E2E tests. |
-| Testing | JUnit system extensions | 1.2.2 | 1.2.3 | |
-| Testing | HttpClient 5 | 5.5.1 | 5.6.5 | Used by Texy service tests. |
-
-### Test dependencies and project APIs
+### Logging and Jackson
 
 | Dependency | Current | Reported update | Notes |
 |---|---:|---:|---|
-| Kotest family | 6.0.7 | 6.2.7 | |
+| Logback | 1.5.21 | 1.6.7 | |
+| Jackson BOM/core/databind | 2.20/2.20.1 | 2.23/2.23.0 | Align the separately pinned annotations version. |
+| SLF4J | 2.0.17 | 2.0.20 | Align bridges and test bindings. |
+
+### Libraries and databases
+
+| Dependency | Current | Reported update | Notes |
+|---|---:|---:|---|
+| Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
+| Gson | 2.13.2 | 2.15.0 | |
+| OrientDB | 3.2.47 | 3.2.58 | Exercise database operations and persisted-store compatibility. |
+| Neo4j | 5.26.0 | 2026.10.2 | Its Java 21-only annotation processor required disabling processor discovery in `kbake-maven-plugin` (which uses no JSR-269 processors) to keep Java 17 compilation. |
+
+### Templates
+
+| Dependency | Current | Reported update | Notes |
+|---|---:|---:|---|
+| Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
+| FreeMarker | 2.3.34 | 2.3.35 | Exercise template rendering. |
+
+### Other runtime dependencies
+
+| Dependency | Current | Reported update | Notes |
+|---|---:|---:|---|
+| Commons IO | 2.21.0 | 2.22.0 | |
+| Commons Configuration | 2.13.0 | 2.15.1 | |
+| Commons Lang | 3.20.0 | 3.22.0 | |
+| jsoup | 1.21.2 | 1.24.1 | |
+| SnakeYAML | 2.5 | 2.7 | |
+| JGit | 7.4.0.202509020913-r | 7.8.1.202611041320-r | Exercise Git-backed content handling. |
+| AsciidoctorJ Diagram | 3.1.0 | 3.2.1 | Exercise diagram rendering. |
+
+### Test dependencies
+
+| Dependency | Current | Reported update | Notes |
+|---|---:|---:|---|
+| Kotest | 6.0.7 | 6.2.7 | |
 | MockK | 1.14.7 | 1.14.12 | |
-| JUnit family | 6.0.1 | 6.1.3 | Keep the JUnit BOM and modules aligned. |
-| JUnit 5 system extensions | 1.2.2 | 1.2.3 | |
-| Testcontainers family | 2.0.2 | 2.0.5 | Run Docker-backed E2E and Texy tests. |
-| Maven core / plugin API | 3.9.11 | 3.10.0 | Rebuild and run Maven-plugin integration tests. |
-| Maven plugin annotations | 3.15.2 | 3.16.0 | |
+| JUnit | 6.0.1 | 6.1.3 | Keep BOM and JUnit modules aligned. |
+| Testcontainers | 2.0.2 | 2.0.5 | Run Docker-backed E2E and Texy tests. |
+| Docker Java | 3.7.0 | 3.7.1 | Used by E2E tests. |
+| JUnit system extensions | 1.2.2 | 1.2.3 | |
 | HttpClient 5 | 5.5.1 | 5.6.5 | Used by Texy service tests. |
-Other candidates from the report include Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 → 4.1.3`, Groovy `5.0.3 → 6.0.0`, Jetty `11.0.26 → 12.1.15`, JFFI `1.3.14 → 1.4.7`, JNR POSIX `3.1.21 → 3.2.8`, and Maven core/API `3.9.11 → 3.10.0`. Review these separately because they may require compatibility work. JCommander `1.85 → 3.0` was also reported in dependency management; verify actual use before upgrading.
+
+Other candidates to handle separately: Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 → 4.1.3`, Groovy `5.0.3 → 6.0.0`, Jetty `11.0.26 → 12.1.15`, JFFI `1.3.14 → 1.4.7`, JNR POSIX `3.1.21 → 3.2.8`, Maven core/API `3.9.11 → 3.10.0`, and Maven plugin annotations `3.15.2 → 3.16.0`. JCommander `1.85 → 3.0` was reported in dependency management; verify actual use before upgrading.
 
 ## Build plugin candidates
 
