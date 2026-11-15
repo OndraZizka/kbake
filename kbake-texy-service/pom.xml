@@ -25,6 +25,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <skipTests>false</skipTests>
         <skipDocker>false</skipDocker>
+        <skipDockerPush>false</skipDockerPush>
     </properties>
 
     <dependencies>
@@ -88,7 +89,7 @@
                             <tag>${docker.image.tag}</tag>
                             <username>${dockerhub.username}</username>
                             <password>${dockerhub.password}</password>
-                            <skip>${skipDocker}</skip>
+                            <skip>${skipDockerPush}</skip>
                         </configuration>
                     </execution>
 
@@ -100,7 +101,7 @@
                             <tag>latest</tag>
                             <username>${dockerhub.username}</username>
                             <password>${dockerhub.password}</password>
-                            <skip>${skipDocker}</skip>
+                            <skip>${skipDockerPush}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -161,7 +162,8 @@
         <profile>
             <id>release</id>
             <properties>
-                <skipDocker>true</skipDocker>
+                <skipDocker>false</skipDocker>
+                <skipDockerPush>true</skipDockerPush>
             </properties>
             <build>
                 <plugins>
@@ -178,6 +180,7 @@
             <id>skipDocker</id>
             <properties>
                 <skipDocker>true</skipDocker>
+                <skipDockerPush>true</skipDockerPush>
             </properties>
         </profile>
 
@@ -186,12 +189,13 @@
             <id>docker-push</id>
             <properties>
                 <skipDocker>false</skipDocker>
+                <skipDockerPush>false</skipDockerPush>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.spotify</groupId><artifactId>dockerfile-maven-plugin</artifactId>
-                        <executions><execution><id>push-docker</id><phase>deploy</phase><goals><goal>push</goal></goals></execution></executions>
+                        <executions><execution><id>push-docker</id><phase>deploy</phase><goals><goal>push</goal></goals><configuration><skip>${skipDockerPush}</skip></configuration></execution></executions>
                     </plugin>
                 </plugins>
             </build>

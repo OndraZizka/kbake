@@ -95,7 +95,7 @@ mvn release:perform -Prelease
 
 The Central Publishing Maven Plugin uploads the release and waits for validation. With `autoPublish=false`, it does not publish automatically. Review the validated deployment at https://central.sonatype.com/publishing and click **Publish** when publication is authorized.
 
-Separately, `kbake-texy-service` binds Docker Hub pushes to the Maven `deploy` phase. `skipPublishing` only excludes that module from the Central bundle; it does not prevent other deploy-phase goals. Confirm those image pushes are intended before running `release:perform`.
+The release profile excludes the Texy module from the Central bundle and suppresses its Docker Hub push goals while still allowing the image build needed by its integration tests.
 
 ## After Deployment
 

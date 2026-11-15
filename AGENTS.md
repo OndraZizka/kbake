@@ -18,6 +18,6 @@
   ```
 
 - `release:perform` uploads through the Maven Central Publishing Plugin with `autoPublish=false`. Central validates the deployment, but it must then be reviewed and manually published in the Central Portal. Do not run `release:perform` or publish in the Portal unless the user has explicitly authorized those actions.
-- Before `release:perform`, confirm whether the Texy service's deploy-phase Docker Hub pushes are intended; Central's `skipPublishing` setting does not suppress other deploy-phase goals.
+- The release profile keeps the Texy image build available for its integration tests but disables all Docker Hub push executions.
 - Configure a Maven Central Portal token under server ID `central` in `~/.m2/settings.xml` and an available GPG signing key before release. Set `GPG_TTY` in interactive shells. Never expose or commit credentials or private keys.
 - Follow `docs/releasing/RELEASING.md` for credential and signing setup details.
