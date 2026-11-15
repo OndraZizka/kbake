@@ -72,7 +72,7 @@ Other candidates from the report include Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 
 
 - [x] Run `mvn test` after each requested dependency group.
 - [x] Run final `mvn verify` after the HttpClient 5 and JUnit system extensions group.
-- [ ] Re-run the KBake Docker E2E tests when the local `kbake/kbake:5.0.0-rc2-SNAPSHOT` image is available. The attempt against the old `5.0.0-rc2` tag failed because that local image was missing; Testcontainers itself connected successfully.
+- [ ] Re-run the KBake Docker E2E tests when the local `kbake/kbake:5.0.0-rc2-SNAPSHOT` image is available. Testcontainers connected successfully, but the earlier run tried the non-snapshot `5.0.0-rc2` image, which was missing; the snapshot image is not present in this worktree's Docker daemon yet.
 - For embedded databases, test both fresh stores and any supported existing-store upgrade path; back up persistent data before a production upgrade.
 
-The final `mvn verify` passed and included the distribution Failsafe tests. The 12 Texy service tests passed when explicitly invoked after packaging and copying that module's test resources. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
+The final `mvn verify` passed and included the distribution Failsafe tests; a subsequent `mvn test` also passed with the `5.0.0-rc2-SNAPSHOT` reactor version. The 12 Texy service tests passed when explicitly invoked after packaging and copying that module's test resources. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
