@@ -102,7 +102,7 @@
         <version.picocli>4.7.7</version.picocli>
         <version.pug4j>2.4.1</version.pug4j>
         <version.slf4j>2.0.20</version.slf4j>
-        <version.snakeyaml>2.5</version.snakeyaml>
+        <version.snakeyaml>2.7</version.snakeyaml>
         <version.thymeleaf>3.1.7.RELEASE</version.thymeleaf>
 
         <!-- Testing dependencies versions (synced) -->
