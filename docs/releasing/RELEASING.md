@@ -132,8 +132,8 @@ The release profile excludes the Texy module from the Central bundle and suppres
 
 All artifacts are signed with GPG in the release profile:
 
-- Configured with `--pinentry-mode loopback`
-- Set `GPG_TTY` in interactive shells so GPG can use the terminal.
+- Uses `gpg-agent` and the system Pinentry program; no passphrase is stored in Maven configuration.
+- Set `GPG_TTY` in the interactive shell before running Maven so Pinentry can use the terminal.
 - The public signing key must be available from a keyserver supported by Central.
 - Select the intended signing key explicitly if multiple keys are available.
 - Do not store a GPG passphrase in the POM or plaintext Maven settings; use the GPG agent interactively or a protected environment variable in automation.
