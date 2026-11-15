@@ -139,15 +139,11 @@ mvn package
 # Snapshot to local repository
 mvn install
 
-# Deploy to Sonatype OSSRH (requires credentials & GPG)
-mvn clean deploy -P release
+# Prepare the release (requires a clean tree, CI, Central credentials, and GPG)
+mvn release:prepare -Prelease -DreleaseVersion=5.0.0
 
-# Dry run without signing
-mvn clean deploy -P release -Darguments="-DskipSigning"
-
-# Stage for release (Maven Release Plugin)
-mvn release:prepare
-mvn release:perform
+# Upload and validate in Central; publish manually from the Central Portal
+mvn release:perform -Prelease
 ```
 
 ## Plugin Goals

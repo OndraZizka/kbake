@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.DockerImageName
 import java.io.File
 import java.nio.file.Files
@@ -140,10 +141,10 @@ class JBakeEndToEndTest {
         ).use { container ->
             container.start()
 
-            // Wait for container to finish and print logs
-            Thread.sleep(5000) // Give KBake time to process
+            // start() waits until KBake logs that the bake has finished.
             val logs = container.logs
             println("KBake output:\n$logs")
+            assertBakeSucceeded(logs)
 
             // Verify output files were created
             verifyBasicStructure(testOutputDir.toFile())
@@ -180,10 +181,10 @@ class JBakeEndToEndTest {
         createJBakeContainer(testDataDir, templatesPath, configFile.toPath(), testOutputDir, kbakeArgs).use { container ->
             container.start()
 
-            // Wait for KBake to finish
-            Thread.sleep(5000)
+            // start() waits until KBake logs that the bake has finished.
             val logs = container.logs
             println("KBake output:\n$logs")
+            assertBakeSucceeded(logs)
 
             // Output is directly in testOutputDir
             verifyBasicStructure(testOutputDir.toFile())
@@ -216,10 +217,10 @@ class JBakeEndToEndTest {
         ).use { container ->
             container.start()
 
-            // Wait for KBake to finish
-            Thread.sleep(5000)
+            // start() waits until KBake logs that the bake has finished.
             val logs = container.logs
             println("KBake output:\n$logs")
+            assertBakeSucceeded(logs)
 
             // Verify content rendering - output is directly in testOutputDir
             verifyContentRendering(testOutputDir.toFile(), templateEngine)
@@ -242,6 +243,7 @@ class JBakeEndToEndTest {
             .withFileSystemBind(configFile.toAbsolutePath().toString(), "/kbake/config.properties", org.testcontainers.containers.BindMode.READ_ONLY)
             .withFileSystemBind(outputDir.toAbsolutePath().toString(), "/kbake/output", org.testcontainers.containers.BindMode.READ_WRITE)
             .withCommand(*kbakeArgs.toTypedArray())  // Spread list into vararg parameters
+            .waitingFor(Wait.forLogMessage(".*Baking finished!.*", 1))
             .withStartupTimeout(Duration.ofMinutes(2))
     }
 
@@ -266,6 +268,12 @@ class JBakeEndToEndTest {
         val files = outputDir.listFiles()
         files shouldNotBe null
         files!!.shouldNotBeEmpty()
+    }
+
+    private fun assertBakeSucceeded(logs: String) {
+        val failureMarkers = listOf("Failed to render", "Failed to bake", "KBake failed")
+        val failures = failureMarkers.filter(logs::contains)
+        check(failures.isEmpty()) { "KBake reported bake errors ($failures):\n$logs" }
     }
 
     private fun verifyIndexPage(outputDir: File) {

@@ -7,16 +7,14 @@ Published artifacts use the `ch.zizka.kbake` namespace.
 
 ## Quick Start
 
+Run the Maven Release Plugin only after the working tree is clean, release commits are pushed, and CI passes. The release uploads to Central for validation; publication remains a separate manual action in the Portal.
+
 ```bash
 export JAVA_HOME=$HOME/.jdks/temurin-17.0.17
 export PATH=$JAVA_HOME/bin:$PATH
 export GPG_TTY=$(tty)
-mvn clean deploy -Prelease
-```
-
-Or use the deployment script:
-```bash
-./deploy-to-central.sh
+mvn release:prepare -Prelease -DreleaseVersion=5.0.0
+mvn release:perform -Prelease
 ```
 
 ## Prerequisites
@@ -34,8 +32,7 @@ java -version  # Verify it's Java 17
 ### 2. Maven Central Portal Account
 
 - Portal: https://central.sonatype.com/
-- Login with your OSSRH JIRA credentials
-- Ensure you may publish to `ch.zizka.kbake`
+- Sign in and verify the account is authorized to publish to `ch.zizka.kbake`.
 
 ### 3. Maven Settings (~/.m2/settings.xml)
 
@@ -49,22 +46,10 @@ java -version  # Verify it's Java 17
     </server>
   </servers>
 
-  <profiles>
-    <profile>
-      <id>ossrh</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <gpg.executable>gpg</gpg.executable>
-        <gpg.passphrase></gpg.passphrase>  <!-- Optional: add if key has passphrase -->
-      </properties>
-    </profile>
-  </profiles>
 </settings>
 ```
 
-To get fresh credentials:
+To get credentials:
 1. Go to https://central.sonatype.com/account
 2. Click "Generate User Token"
 3. Copy the credentials to settings.xml
@@ -73,13 +58,7 @@ To get fresh credentials:
 
 Your GPG key must be uploaded to public keyservers.
 
-#### If you already have a key at $HOME/.ssh/OSSRH_gpg.key:
-
-```bash
-./import-gpg-key.sh
-```
-
-#### To generate a new key:
+#### To generate a new key, if needed:
 
 ```bash
 gpg --full-generate-key
@@ -102,43 +81,21 @@ gpg --keyserver keys.openpgp.org --send-keys KEY_ID
 gpg --keyserver keyserver.ubuntu.com --send-keys KEY_ID
 ```
 
-## Deployment Methods
+## Release Procedure
 
-### Method 1: Direct Deployment (Recommended)
-
-```bash
-export JAVA_HOME=$HOME/.jdks/temurin-17.0.17
-export PATH=$JAVA_HOME/bin:$PATH
-export GPG_TTY=$(tty)
-mvn clean deploy -Prelease
-```
-
-This will:
-1. Build all modules
-2. Generate sources and javadoc JARs (using Dokka for Kotlin code)
-3. Sign all artifacts with GPG
-4. Upload to Maven Central Portal
-5. Automatically validate and publish (autoPublish=true)
-
-### Method 2: Using Deployment Script
-
-```bash
-./deploy-to-central.sh
-```
-
-The script performs the same steps with interactive prompts and validation.
-
-### Method 3: Using maven-release-plugin
-
-For version management and Git tagging:
+The Maven Release Plugin updates versions and creates the SCM release commit and tag. Review and confirm the next development version when prompted.
 
 ```bash
 export JAVA_HOME=$HOME/.jdks/temurin-17.0.17
 export PATH=$JAVA_HOME/bin:$PATH
 export GPG_TTY=$(tty)
-mvn release:prepare -Prelease  ## Updates versions, creates Git tag.
-mvn release:perform -Prelease  ## Builds and uploads.
+mvn release:prepare -Prelease -DreleaseVersion=5.0.0
+mvn release:perform -Prelease
 ```
+
+The Central Publishing Maven Plugin uploads the release and waits for validation. With `autoPublish=false`, it does not publish automatically. Review the validated deployment at https://central.sonatype.com/publishing and click **Publish** when publication is authorized.
+
+Separately, `kbake-texy-service` binds Docker Hub pushes to the Maven `deploy` phase. `skipPublishing` only excludes that module from the Central bundle; it does not prevent other deploy-phase goals. Confirm those image pushes are intended before running `release:perform`.
 
 ## After Deployment
 
@@ -167,7 +124,7 @@ mvn release:perform -Prelease  ## Builds and uploads.
 - `ch.zizka.kbake:kbake-dist` - Distribution JAR
 - `ch.zizka.kbake:kbake-maven-plugin` - Maven plugin
 
-Note: `kbake-e2e-tests` is not deployed (has `maven.deploy.skip=true`)
+`kbake-e2e-tests` and `kbake-texy-service` are excluded from the Central bundle using the Central plugin's `skipPublishing` option.
 
 ## Project Configuration
 
@@ -176,20 +133,19 @@ Note: `kbake-e2e-tests` is not deployed (has `maven.deploy.skip=true`)
 All artifacts are signed with GPG in the release profile:
 
 - Configured with `--pinentry-mode loopback`
-- Requires GPG_TTY environment variable
-- Public keys must be on keyservers
+- Set `GPG_TTY` in interactive shells so GPG can use the terminal.
+- The public signing key must be available from a keyserver supported by Central.
+- Select the intended signing key explicitly if multiple keys are available.
+- Do not store a GPG passphrase in the POM or plaintext Maven settings; use the GPG agent interactively or a protected environment variable in automation.
 
 ## Troubleshooting
 
 ### Error: GPG signing failed: No secret key
 
-Your GPG key is not imported.
+The selected GPG secret key is unavailable to the signing process.
 
 **Solution**:
-```bash
-./import-gpg-key.sh      ## Import existing key
-gpg --full-generate-key  ## Or generate new key
-```
+Check `gpg --list-secret-keys` and import or create a key if necessary.
 
 ### Error: GPG signing failed: Inappropriate ioctl for device
 
@@ -212,18 +168,11 @@ gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID
 
 ## Manual Review Before Publishing
 
-If you want to review artifacts before they're released to Maven Central:
+The release profile already has `autoPublish=false`. To review artifacts before publication:
 
-1. Change in `pom.xml`: `<autoPublish>false</autoPublish>`
-2. Deploy: `mvn clean deploy -Prelease`
-3. Review at: https://central.sonatype.com/publishing
-4. Click "Publish" to release to Maven Central
-
-## Helper Scripts
-
-- `deploy-to-central.sh` - Interactive deployment script
-- `import-gpg-key.sh` - Import existing GPG key
-- `setup-gpg-key.sh` - Generate new GPG key
+1. Run the Maven Release Plugin procedure above; `release:perform` uploads and validates the bundle.
+2. Review the deployment and its artifacts at https://central.sonatype.com/publishing.
+3. Click **Publish** in the Portal when publication is authorized.
 
 ## Reference
 
