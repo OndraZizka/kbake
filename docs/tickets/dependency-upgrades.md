@@ -9,7 +9,7 @@ Review the updates reported by Maven Versions Plugin, upgrade them in small test
 - [x] Tag the `5.0.0-rc1` base before changes.
 - [x] Set the reactor version to `5.0.0-rc2`.
 - [x] Upgrade Kotlin from `2.2.21` to `2.4.21` (shared Kotlin BOM and Maven plugin property).
-- [ ] Upgrade remaining requested dependencies and test each group.
+- [x] Upgrade the requested dependencies and run the reactor tests after each listed group.
 - [ ] Review and upgrade the remaining build plugins.
 
 ## Dependency candidates
@@ -22,7 +22,7 @@ Review the updates reported by Maven Versions Plugin, upgrade them in small test
 | Databases/libraries | Caffeine | 3.2.3 | 3.3.1 | Managed transitive override. |
 | Databases/libraries | Gson | 2.13.2 | 2.15.0 | |
 | Databases/libraries | OrientDB | 3.2.47 | 3.2.58 | Exercise database operations and persisted-store compatibility. |
-| Databases/libraries | Neo4j | 5.26.0 | 2026.10.2 | Major version-stream change; validate APIs and existing-store upgrade behavior. |
+| Databases/libraries | Neo4j | 5.26.0 | 2026.10.2 | Major version-stream change. Its Java 21-only service annotation processor required disabling processor discovery in `kbake-maven-plugin` (no JSR-269 processors are used there) to retain Java 17 compilation. |
 | Templates | Thymeleaf | 3.1.3.RELEASE | 3.1.7.RELEASE | Exercise template rendering. |
 | Templates | FreeMarker | 2.3.34 | 2.3.35 | Exercise template rendering. |
 | Other runtime | Commons IO | 2.21.0 | 2.22.0 | |
@@ -70,6 +70,9 @@ Other candidates from the report include Pug4j `2.4.1 → 3.1.1`, Pebble `4.0.0 
 
 ## Verification
 
-- Run the project tests after each requested dependency group.
-- Run Docker-backed E2E and Texy integration tests when available.
+- [x] Run `mvn test` after each requested dependency group.
+- [x] Run final `mvn verify` after the HttpClient 5 and JUnit system extensions group.
+- [ ] Run Docker-backed E2E tests in an environment with Docker available.
 - For embedded databases, test both fresh stores and any supported existing-store upgrade path; back up persistent data before a production upgrade.
+
+The final `mvn verify` passed. The distribution build still reports duplicate classes/resources, including Lucene classes from Neo4j; review those warnings separately.
