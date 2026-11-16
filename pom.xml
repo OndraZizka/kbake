@@ -7,19 +7,18 @@
     <version>5.0.0-rc3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>KBake parent</name>
+    <name>KBake Project</name>
     <description>
         KBake is an open source static site/blog generator for developers.
         It is a modernization of the upstream JBake 2.x project.
     </description>
     <url>https://github.com/OndraZizka/kbake</url>
-    <inceptionYear>2012</inceptionYear>
+    <inceptionYear>2025</inceptionYear>
 
     <scm>
         <url>https://github.com/OndraZizka/kbake</url>
         <connection>scm:git:git@github.com:OndraZizka/kbake.git</connection>
         <developerConnection>scm:git:git@github.com:OndraZizka/kbake.git</developerConnection>
-        <tag>kbake-base-5.0.0-rc1</tag>
     </scm>
 
     <issueManagement><system>GitHub Issues</system><url>https://github.com/OndraZizka/kbake/issues</url></issueManagement>
@@ -27,7 +26,9 @@
     <licenses><license><name>The MIT License (MIT)</name><url>http://opensource.org/licenses/MIT</url></license></licenses>
 
     <developers>
-        <developer><id>ondrazizka</id><name>Ondrej Zizka</name><email>ondrej@zizka.ch</email></developer>
+        <developer><id>ondrazizka</id><name>Ondrej Zizka</name><email>ondrej@zizka.ch</email><roles><role>Fork, Kotlin, DB sanitization, Maven</role></roles></developer>
+
+        <!-- Upstream JBake developers -->
         <developer><id>jonbullock</id><name>Jonathan Bullock</name><email>jonbullock@gmail.com</email><url>http://jonathanbullock.com</url><timezone>Europe/London</timezone></developer>
         <developer><id>ancho</id><name>Frank Becker</name><email>frank@calmdevelopment.de</email><timezone>Europe/Berlin</timezone></developer>
         <developer><id>manikmagar</id><name>Manik Magar</name><url>https://manik.magar.me/</url><timezone>America/New_York</timezone></developer>
